@@ -2,79 +2,94 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>英太郎殺人事件 - 名学は我々には広すぎる</title>
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
     <style>
-        /* --- ファミコン風UI設定 --- */
+        /* --- スマホ（iPhone）縦画面向けの完全レスポンシブUI設定 --- */
+        :root {
+            --fami-border-size: 4px; /* スマホ向けに少し細く */
+        }
+        
         body { 
             background-color: #000; color: #fff; 
             font-family: 'DotGothic16', sans-serif; 
-            display: flex; justify-content: center; align-items: center;
+            display: flex; justify-content: center; align-items: flex-start; /* 上詰めに変更 */
             height: 100vh; margin: 0; user-select: none;
+            touch-action: manipulation; /* スマホのダブルタップズームを無効化 */
+            overflow: hidden; /* 画面全体がスクロールしないように */
         }
         
         #game-wrapper {
-            width: 640px; display: flex; flex-direction: column; gap: 10px; position: relative;
+            width: 100%; max-width: 480px; /* iPhone ProMaxサイズまでカバー */
+            height: 100%; display: flex; flex-direction: column; gap: 4px; position: relative;
+            padding: 4px; box-sizing: border-box;
         }
 
+        /* ファミコン風の二重線ウィンドウ（スマホ向け） */
         .fami-window {
-            border: 6px double #fff; background-color: #000; padding: 10px; box-sizing: border-box;
+            border: var(--fami-border-size) double #fff; background-color: #000; padding: 6px; box-sizing: border-box;
         }
 
-        #top-row { display: flex; gap: 10px; height: 260px; }
+        /* 上部エリア（PC向けの横並びを縦並びに変更） */
+        #top-row { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
         
-        /* 画像エリア */
-        #image-window { width: 340px; position: relative; padding: 4px; display: flex; justify-content: center; align-items: center; background: #111;}
-        #scene-image { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+        /* グラフィックウィンドウ（上） */
+        #image-window { width: 100%; height: auto; aspect-ratio: 4 / 3; /* 4:3のレトロ比率を維持 */ position: relative; padding: 0; display: flex; justify-content: center; align-items: center; background: #111; border-width: var(--fami-border-size);}
+        #scene-image { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
         #location-title {
-            position: absolute; bottom: 10px; right: 10px;
-            background-color: #000; padding: 2px 8px; font-size: 16px; border: 2px solid #fff;
+            position: absolute; bottom: 6px; right: 6px;
+            background-color: #000; padding: 1px 4px; font-size: 14px; border: 1px solid #fff; z-index: 10;
         }
 
-        /* コマンドエリア（バグ修正済：Gridレイアウトで綺麗に整列） */
-        #command-window { flex-grow: 1; display: flex; flex-direction: column; }
-        #main-commands, #sub-commands { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 6px; 
-        }
-        #sub-commands { border-top: 2px dashed #555; margin-top: 10px; padding-top: 10px; display: none; }
+        /* テキストウィンドウ（中） */
+        #text-window { flex-grow: 1; min-height: 100px; max-height: 200px; overflow-y: hidden; line-height: 1.5; font-size: 16px; white-space: pre-wrap; order: 1; /* コマンドより先に表示 */ border-width: var(--fami-border-size);}
         
-        .cmd-btn {
-            background: none; border: none; color: #fff; font-family: 'DotGothic16', sans-serif; 
-            font-size: 18px; cursor: pointer; text-align: left; padding: 2px; outline: none;
-            display: flex; align-items: flex-start;
-            white-space: normal; word-break: break-all; /* 文字のはみ出しを防止 */
+        /* コマンドウィンドウ（下） */
+        #command-window { width: 100%; order: 2; flex-shrink: 0; border-width: var(--fami-border-size);}
+        #main-commands, #sub-commands { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 4px; 
         }
-        .cmd-btn::before { content: '　'; margin-right: 5px; flex-shrink: 0; }
+        /* 人物リストがはみ出るバグ修正： Gridを1列にして内容に合わせて自動調整 */
+        #sub-commands { border-top: 2px dashed #555; margin-top: 6px; padding-top: 6px; display: none; grid-template-columns: 1fr; /* 1列に */ max-height: 150px; /* はみ出さないように高さを制限 */ overflow-y: auto; /* はみ出てもスクロールできるように */ }
+        
+        /* スマホ向けにボタンを大きく、タップしやすく */
+        .cmd-btn {
+            background: none; border: 1px solid #444; color: #fff; font-family: 'DotGothic16', sans-serif; 
+            font-size: 18px; cursor: pointer; text-align: left; padding: 8px; outline: none;
+            display: flex; align-items: flex-start;
+            white-space: normal; word-break: break-all;
+            -webkit-tap-highlight-color: transparent; /* タップ時のハイライトを無効 */
+        }
+        .cmd-btn::before { content: '　'; margin-right: 2px; flex-shrink: 0; }
         .cmd-btn:hover::before { content: '▶'; color: #fff; }
         .special-btn { color: #ffeb3b; display: none; }
         .special-btn:hover::before { color: #ffeb3b; }
 
-        #text-window { height: 180px; overflow-y: hidden; line-height: 1.6; font-size: 18px; white-space: pre-wrap; }
-        
-        /* スタート画面 */
+        /* スタート画面（スマホ向け） */
         #start-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center;
-            font-size: 24px; z-index: 300; cursor: pointer; border: 6px double #fff; box-sizing: border-box;
+            background: rgba(0,0,0,1); display: flex; justify-content: center; align-items: center;
+            font-size: 20px; z-index: 300; cursor: pointer; border: 6px double #fff; box-sizing: border-box; text-align: center;
         }
         .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
-        /* 迫力のタイトル画面 */
+        /* 迫力のタイトル画面（スマホ向け） */
         #title-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; display: none; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 200; border: 6px double #fff; box-sizing: border-box; text-align: center;
+            z-index: 200; border: 6px double #fff; box-sizing: border-box; text-align: center; padding: 20px;
         }
-        #main-title { color: #f00; font-size: 52px; margin: 0; text-shadow: 3px 3px 0 #fff; letter-spacing: 5px;}
-        #sub-title { color: #fff; font-size: 24px; margin-top: 30px; letter-spacing: 3px;}
+        #main-title { color: #f00; font-size: 40px; margin: 0; text-shadow: 2px 2px 0 #fff; letter-spacing: 3px; line-height: 1.2;}
+        #sub-title { color: #fff; font-size: 18px; margin-top: 20px; letter-spacing: 2px;}
     </style>
 </head>
 <body>
 
 <div id="game-wrapper">
     <div id="start-overlay" onclick="startGame()">
-        <span class="blink">▶ 画面をクリックして スタート</span>
+        <span class="blink">▶ 画面をタップして スタート</span>
     </div>
 
     <div id="title-overlay">
@@ -84,7 +99,7 @@
 
     <div id="top-row">
         <div id="image-window" class="fami-window">
-            <img id="scene-image" src="http://googleusercontent.com/generated_image_content/0" alt="背景">
+            <img id="scene-image" src="image_4.png" alt="背景">
             <div id="location-title">名学大 食堂</div>
         </div>
 
@@ -96,7 +111,6 @@
                 <button class="cmd-btn" onclick="showPeople('きけ')">アリバイ きけ</button>
                 <button class="cmd-btn" onclick="showItems()">アイテム みる</button>
                 <button class="cmd-btn" onclick="executeCommand('ダイヤル', 'まわす')">ダイヤル まわす</button>
-                
                 <button class="cmd-btn special-btn" onclick="executeCommand('ついきゅう', '井口')" id="cmd-pursue">いぐち ついきゅう</button>
                 <button class="cmd-btn special-btn" onclick="executeCommand('ラーメン屋', 'いく')" id="cmd-ramen">ゆきちゃんラーメン</button>
             </div>
@@ -122,12 +136,10 @@
         osc.connect(gain); gain.connect(audioCtx.destination);
         if (type === 'text') {
             osc.type = 'square'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.03); 
+            gain.gain.setValueAtTime(0.02, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.03); 
         } else if (type === 'select') {
             osc.type = 'square'; osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.05);
         }
     }
 
@@ -139,8 +151,8 @@
         const gain = audioCtx.createGain();
         osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination);
         osc1.type = 'sawtooth'; osc2.type = 'square';
-        osc1.frequency.setValueAtTime(110, audioCtx.currentTime); // 低音
-        osc2.frequency.setValueAtTime(112, audioCtx.currentTime); // 不協和音で不気味に
+        osc1.frequency.setValueAtTime(110, audioCtx.currentTime); 
+        osc2.frequency.setValueAtTime(112, audioCtx.currentTime); 
         gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 3.5);
         osc1.start(); osc2.start();
@@ -156,26 +168,38 @@
     const locationTitle = document.getElementById('location-title');
 
     // --- ゲームデータ ---
-    // 食堂は今回生成した画像URL。他はダミーです（後で差し替えます）
+    // ナノバナナで生成した食堂・教室のドット絵を組み込みました！
     const images = {
-        '食堂': 'http://googleusercontent.com/generated_image_content/0',
-        '教室': 'https://placehold.jp/24/222222/ffffff/320x240.png?text=教室',
-        'チャペル': 'https://placehold.jp/24/222222/ffffff/320x240.png?text=チャペル',
-        '喫煙所': 'https://placehold.jp/24/222222/ffffff/320x240.png?text=喫煙所'
+        '食堂': 'image_4.png',
+        '教室': 'image_6.png', // 生成した教室のドット絵
+        'チャペル': 'https://via.placeholder.com/320x240/000000/ffffff?text=Chapel', // プレースホルダーURL
+        '喫煙所': 'https://via.placeholder.com/320x240/000000/ffffff?text=Smoking+Area'
     };
+    
+    // 人物のドット絵（プレースホルダー）
+    const peopleImages = {
+        '井口': 'https://via.placeholder.com/64x64/222222/ffffff?text=Iguchi',
+        '加藤': 'https://via.placeholder.com/64x64/222222/ffffff?text=Kato',
+        '近藤': 'https://via.placeholder.com/64x64/222222/ffffff?text=Kondo',
+        '櫛田': 'https://via.placeholder.com/64x64/222222/ffffff?text=Kushida',
+        '高井': 'https://via.placeholder.com/64x64/222222/ffffff?text=Takai',
+        '秋葉': 'https://via.placeholder.com/64x64/222222/ffffff?text=Akiba',
+        '蟹江': 'https://via.placeholder.com/64x64/222222/ffffff?text=Kanie'
+    };
+    
     const friends = ["井口", "加藤", "近藤", "櫛田", "高井", "秋葉", "蟹江"];
 
     const testimonies = {
-        "井口": "井口「えっ！？ 英太郎が死んだ！？\n……あ、あの時、俺が テキーラを 無理やり 飲ませすぎたから…\nアルコール中毒で！？ どうしよう、俺のせいだ…！」",
-        "加藤": "加藤「英太郎は マクレーンみたいな奴だ。絶対 生きてるさ。\nそういえば あいつ、最近『四角、三角、丸』の 順番が\nどうのこうのって ブツブツ言ってたな。\nついに 頭がおかしくなったかと 思ったよ」", // 謎解きのヒントを追加！
-        "近藤": "近藤「嘘だろ？ 英太郎が？\nあいつ、俺がノート貸してやったお礼に、\n『とびきりスパイシーなメシ』を 奢ってくれるって 言ってたのに」",
-        "櫛田": "櫛田「チッ、あのバカ。 勝手に 死ぬとか、マジで 許さねえぞ。\n……おい、早く 犯人見つけろよ。\n俺の 最高のオモチャを 奪ったヤツをさ……」",
+        "井口": "井口「えっ！？ 英太郎が死んだ！？\nアルコール中毒で！？ どうしよう、俺のせいだ…！\nあいつとは 卒業旅行で ハワイに行くって 約束してたのに…！」",
+        "加藤": "加藤「英太郎は マクレーンみたいな奴だ。絶対 生きてるさ。\nそういえば あいつ、最近『四角、三角、丸』の 順番が\nどうのこうのって ブツブツ言ってたな」", 
+        "近藤": "近藤("近藤「嘘だろ？ 英太郎が？\nあいつ、俺がノート貸してやったお礼に、\n『とびきりスパイシーなメシ』を 奢ってくれるって 言ってたのに」",
+        "櫛田": "櫛田「チッ、あのバカ。 勝手に 死ぬとか、マジで 許さねえぞ。\n……おい、早く 犯人見つけろよ。俺の 最高のオモチャを 奪ったヤツをさ……」",
         "高井": "高井「そういや、あいつ 最近『ニンニクの匂いが 取れない』って 悩んでたな。\n事件と 何か 関係あるのか？」",
         "秋葉": "秋葉「オラが 名古屋に出てきた時、\n英太郎が『真っ赤な看板』の 小せぇ店で 飯奢ってくれたんだ。\nオラ、まだ お礼も 言えてねぇのに……」",
         "蟹江": "蟹江「英太郎のヤツが 無理やり 俺を 遊びに 誘い出して……。\n迷惑だったけど…… 悪くなかったんだ。\nあいつが いない大学なんて、つまらなすぎる……」"
     };
 
-    // --- ゲームフラグ（謎解き要素追加） ---
+    // --- ゲームフラグ ---
     let gameState = {
         currentLocation: '食堂',
         currentPerson: null,
@@ -202,12 +226,11 @@
             textArea.scrollTop = textArea.scrollHeight;
             i++;
             if (i >= text.length) { clearInterval(typingInterval); isTyping = false; }
-        }, 40); 
+        }, 30); // iPhone向けに少し速く
     }
 
-    // === 追及条件のチェック（難易度アップ） ===
+    // === 追及条件のチェック ===
     function checkPursuit() {
-        // 全員と話し、赤い液体を見つけ、さらにレシートを見つけないと追及できない！
         if (gameState.talkedCount >= 6 && gameState.clueFound && gameState.foundReceipt) {
             cmdPursue.style.display = "flex";
         }
@@ -217,27 +240,32 @@
     function showLocations() {
         if (isTyping || gameState.pursuitMode) return;
         playBeep('select'); subCommandArea.style.display = 'grid'; subCommandArea.innerHTML = ""; 
+        subCommandArea.style.gridTemplateColumns = "1fr 1fr"; // 場所は2列
         ["食堂", "教室", "チャペル", "喫煙所"].forEach(loc => {
             if (loc === gameState.currentLocation) return;
             const btn = document.createElement("button"); btn.className = "cmd-btn"; btn.innerText = loc;
             btn.onclick = () => { playBeep('select'); executeCommand('ばしょいどう', loc); };
             subCommandArea.appendChild(btn);
         });
+        subCommandArea.scrollTop = 0; // スクロールをリセット
     }
 
     function showPeople(action) {
         if (isTyping || gameState.pursuitMode) return;
         playBeep('select'); subCommandArea.style.display = 'grid'; subCommandArea.innerHTML = ""; 
+        subCommandArea.style.gridTemplateColumns = "1fr"; // 人物は1列（バグ修正）
         friends.forEach(person => {
             const btn = document.createElement("button"); btn.className = "cmd-btn"; btn.innerText = person;
             btn.onclick = () => { playBeep('select'); executeCommand(action, person); };
             subCommandArea.appendChild(btn);
         });
+        subCommandArea.scrollTop = 0; // スクロールをリセット
     }
 
     function showItems() {
         if (isTyping || gameState.pursuitMode) return;
         playBeep('select'); subCommandArea.style.display = 'grid'; subCommandArea.innerHTML = ""; 
+        subCommandArea.style.gridTemplateColumns = "1fr"; // アイテムは1列
         let hasItem = false;
         if (gameState.foundMemo) {
             hasItem = true;
@@ -255,6 +283,7 @@
             const btn = document.createElement("button"); btn.className = "cmd-btn"; btn.innerText = "なにも もっていない";
             subCommandArea.appendChild(btn);
         }
+        subCommandArea.scrollTop = 0; // スクロールをリセット
     }
 
     // === コマンド実行ロジック ===
@@ -270,6 +299,8 @@
         } else if (action === 'よべ') {
             gameState.currentPerson = target;
             response = `＞ ${target} を よんだ。\n\n${target}「……探偵か。なにか 用か？」`;
+            // 人物グラフィックがある場合は表示する（今回はまだプレースホルダー）
+            // sceneImage.src = peopleImages[target];
 
         } else if (action === 'きけ') {
             if (!gameState.currentPerson || gameState.currentPerson !== target) {
@@ -287,10 +318,10 @@
                 response = "＞ 食堂のテーブルを 調べた。\n\n赤い液体で『英太郎が殺された・・・』と 書かれている。\n血にしては スパイシーすぎる気が……。";
                 gameState.clueFound = true;
             } else if (gameState.currentLocation === '喫煙所' && !gameState.foundMemo) {
-                response = "＞ 灰皿の裏を 調べた。\n\n丸められた【暗号のメモ】を 発見した！\n『アイテム みる』コマンドで 確認できそうだ。";
+                response = "＞ 灰皿の裏を 調べた。\n\n丸められた【暗号のメモ】を 発見した！";
                 gameState.foundMemo = true;
             } else if (gameState.currentLocation === '教室') {
-                response = "＞ 教室の後ろを 調べた。\n\n英太郎の ロッカーに、\n【3桁の ダイヤル錠】が かかっている。\n暗証番号が 分かれば 開けられそうだが……。";
+                response = "＞ 教室の後ろを 調べた。\n\n英太郎の ロッカーに、\n【3桁の ダイヤル錠】が かかっている。";
             } else {
                 response = `＞ ${gameState.currentLocation} の あたりを 調べた。\n\n特に 変わったものは ないようだ。`;
             }
@@ -298,9 +329,9 @@
 
         } else if (action === 'アイテム') {
             if (target === 'メモ') {
-                response = "＞ メモを 読んだ。\n\n『 シ・カ・ク 』\n『 サ・ン・カ・ク 』\n『 マ・ル 』\n……とだけ 書かれている。";
+                response = "＞ メモを 読んだ。\n\n『 シ・カ・ク 』『 サ・ン・カ・ク 』『 マ・ル 』";
             } else if (target === 'レシート') {
-                response = "＞ レシートを 見た。\n\n『ゆきちゃんラーメン』の レシートだ。\nラー油で ベトベトに なっている……。";
+                response = "＞ レシートを 見た。\n\n『ゆきちゃんラーメン』の レシートだ。";
             }
 
         } else if (action === 'ダイヤル') {
@@ -309,28 +340,32 @@
             } else if (gameState.lockerOpened) {
                 response = "ロッカーは 既に 開いている。";
             } else {
-                // 謎解きの答えの入力
-                let code = prompt("英太郎のロッカーの ダイヤル錠だ。\n3桁の 数字を 半角で入力しろ。");
-                if (code === "430") {
-                    response = "＞ カチャッ！\n\n見事に ダイヤル錠が 開いた！\n中から、ラー油で ベトベトになった\n『ゆきちゃんラーメン』の レシートを 発見した！";
-                    gameState.lockerOpened = true;
-                    gameState.foundReceipt = true;
-                    checkPursuit();
-                } else {
-                    response = "＞ ガチャガチャ……\n\n番号が 違うようだ。 開かない。";
-                }
+                // iPhoneのpromptバグ対策：少し待ってから呼び出す
+                setTimeout(() => {
+                    let code = prompt("英太郎のロッカーの ダイヤル錠だ。\n3桁の 数字を 入力しろ。");
+                    if (code === "430") {
+                        playBeep('select');
+                        printText("＞ カチャッ！\n\n開いた！ 中から『ゆきちゃんラーメン』の レシートを 発見した！");
+                        gameState.lockerOpened = true;
+                        gameState.foundReceipt = true;
+                        checkPursuit();
+                    } else if (code !== null) {
+                        printText("＞ ガチャガチャ……\n\n開かない。 番号が 違うようだ。");
+                    }
+                }, 100);
+                return; // promptの処理を待つため、通常のprintTextはスキップ
             }
 
         } else if (action === 'ついきゅう') {
             gameState.pursuitMode = true; cmdPursue.style.display = "none";
             sceneImage.src = images['チャペル']; locationTitle.innerText = "名学大 チャペル";
-            response = "探偵「井口、お前が テキーラを飲ませた後に 何かあったんだな？」\n\n井口「ち、違う！ 俺は 殺してない！ \nうわああああああっ！！ ごめん、英太郎おおおお！！」\n\n＞ 井口は パニックになり、チャペルから 逃げ出してしまった！\n\n近藤「……なぁ、みんなで 飯 食いに行こうぜ！」\n秋葉「そうだな、あの店に……」";
+            response = "＞ 井口を 追及した！\n\n井口「ち、違う！ 俺は 殺してない！ \nうわああああああっ！！」\n\n＞ 井口は パニックになり、逃げ出してしまった！";
             setTimeout(() => { cmdRamen.style.display = "flex"; }, 5000);
 
         } else if (action === 'ラーメン屋') {
             cmdRamen.style.display = "none";
             sceneImage.src = images['喫煙所']; locationTitle.innerText = "ゆきちゃんラーメン";
-            response = "＞ 【ゆきちゃんラーメン】へ やってきた。\n\n厨房を見ると、足首に 鎖を繋がれ、白目を剥きながら\n無限に 台湾ラーメンを作り続ける 英太郎の 姿があった！\n\n店長『こいつ、ウチの 秘伝のスープ こぼしやがったから、\n体で 払ってもらってんだわ』\n\n探偵「……食堂の 赤い文字は、台湾ラーメンの汁か……」\n\nみんなは 無言で 激辛台湾ラーメンを すすり、そっと 店を あとにした。\n\n【 事件解決？ 】\n〜 完 〜\n\n（リロードして最初から）";
+            response = "＞ 【ゆきちゃんラーメン】へ やってきた。\n\n厨房を見ると、鎖を繋がれ、無限に 台湾ラーメンを作り続ける 英太郎の 姿があった！\n\n店長『体で 払ってもらってんだわ』\n\n探偵「……赤い文字は、台湾ラーメンの汁か……」\n\n【 事件解決？ 】\n〜 完 〜";
         }
 
         printText(response);
@@ -340,16 +375,12 @@
     function startGame() {
         document.getElementById('start-overlay').style.display = 'none';
         initAudio(); 
-        
-        // タイトル画面とBGMの表示
         const titleOverlay = document.getElementById('title-overlay');
         titleOverlay.style.display = 'flex';
         playTitleSound();
-        
-        // 3.5秒後にタイトルを消してゲーム開始
         setTimeout(() => {
             titleOverlay.style.display = 'none';
-            printText("あなた（探偵）は 名学大の 食堂に やってきた。\nテーブルの上に、赤い文字で『英太郎が殺された・・・』と\n書かれているのを 発見した！\n\n英太郎の親友 7人から、話を聞いてみよう。");
+            printText("あなた（探偵）は 名学大の 食堂に やってきた。\nテーブルの上に、赤い文字で『英太郎が殺された・・・』と\n書かれているのを 発見した！");
         }, 3500);
     }
 </script>
