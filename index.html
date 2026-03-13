@@ -15,7 +15,7 @@
 
         #end-roll-credits {
             position: absolute; width: 100%; top: 100%;
-            animation: scrollCredits 166s linear forwards; /* 曲の長さ166秒 */
+            animation: scrollCredits 166s linear forwards; 
             padding-bottom: 200px; 
         }
         @keyframes scrollCredits {
@@ -198,7 +198,7 @@
                 gain.gain.setValueAtTime(0.05, audioCtx.currentTime); 
                 osc.start(); osc.stop(audioCtx.currentTime + 0.05); 
             }
-        } catch (e) { console.log("Audio Error Ignored"); }
+        } catch (e) { }
     }
     
     // バッドエンド時の絶望的な効果音
@@ -261,10 +261,14 @@
 
     // === テキスト表示 ===
     function printText(text, callback = null) {
-        clearInterval(typingInterval); textArea.innerHTML = ""; let i = 0; isTyping = true;
+        clearInterval(typingInterval); 
+        textArea.innerHTML = ""; 
+        let i = 0; 
+        isTyping = true;
+        
         typingInterval = setInterval(() => {
             textArea.innerHTML += text.charAt(i);
-            if (i % 5 === 0) playBeep('text'); // 音が途切れないように頻度を調整
+            if (i % 5 === 0) playBeep('text'); 
             textArea.scrollTop = textArea.scrollHeight;
             i++;
             if (i >= text.length) { 
@@ -314,10 +318,14 @@
     function showPeople() { const peopleHere = locationPeople[gameState.currentLocation]; if (peopleHere.length === 0) { printText("ここには誰もいないようだ。"); return; } buildSubMenu(peopleHere.map(person => ({ label: person, action: () => executeCommand('聞く', person) })), true); }
     function showCulprits() { buildSubMenu(allFriends.map(person => ({ label: person, isDanger: true, action: () => executeCommand('犯人', person) })), true); }
 
-    // ★ バッドエンドから復帰する関数 ★
+    // ★ バッドエンドから復帰する関数（フリーズ修正済） ★
     function restoreFromBadEnd() {
         playBeep('cancel');
         gameState.isGameOver = false;
+        
+        // タイピングフラグを強制的に解除（ここがフリーズの原因でした）
+        clearInterval(typingInterval);
+        isTyping = false;
         
         // 元の場所の画像とタイトルに戻す
         sceneImage.src = images[gameState.currentLocation];
@@ -329,8 +337,9 @@
         document.getElementById('txt-win').classList.remove("game-over-border");
         document.getElementById('cmd-win').classList.remove("game-over-border");
         
-        printText("気を取り直して、もう一度推理しよう……。");
-        showCulprits(); // 犯人指名画面を直接開く
+        // テキストを瞬時に表示して、そのまま犯人選択画面を展開
+        textArea.innerHTML = "気を取り直して、もう一度推理しよう……。\n誰が真犯人なんだ…？";
+        showCulprits(); 
     }
 
     // === コマンド実行 ===
@@ -388,7 +397,7 @@
                 
                 response = `探偵「犯人はお前だ！ ${target}！」\n\n（臨時ニュース速報）\nアナウンサー『英太郎さんは、スズメバチに刺され ショック死しました』\n\n探偵「な、なんだってー！？ 事件じゃなかったのか…」\n\n【 BAD END - 推理失敗 】`; 
                 
-                // 文字が全部表示されたら「戻る」ボタンを出す
+                // ★ 文字が全部表示されたら「戻る」ボタンを出す ★
                 printText(response, () => {
                     subCmdArea.style.display = 'grid';
                     subCmdArea.style.gridTemplateColumns = '1fr';
@@ -404,7 +413,7 @@
                     
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
                     
-                    // 文字が全部表示されたら「ラーメン屋へ」ボタンを出す
+                    // ★ 文字が全部表示されたら「ラーメン屋へ」ボタンを出す ★
                     printText(response, () => {
                         subCmdArea.style.display = 'grid';
                         subCmdArea.style.gridTemplateColumns = '1fr';
@@ -421,7 +430,7 @@
             subCmdArea.style.display = 'none';
             response = "＞ 【ゆきちゃんラーメン】へやってきた。\nそこには 鎖に繋がれ、白目を剥きながら無限に台湾ラーメンを作り続ける 英太郎の姿が！\n店長『体で 払ってもらってんだわ』\n探偵「……あの汁、台湾ラーメンだったのか……」";
             
-            // 文字が全部表示されたら「エンディングへ」ボタンを出す
+            // ★ 文字が全部表示されたら「エンディングへ」ボタンを出す ★
             printText(response, () => {
                 subCmdArea.style.display = 'grid';
                 subCmdArea.style.gridTemplateColumns = '1fr';
