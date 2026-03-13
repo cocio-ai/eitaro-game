@@ -152,12 +152,12 @@
     </div>
 
     <div id="top-row">
-        <div id="image-window" class="fami-window" id="img-win">
+        <div id="image-window" class="fami-window">
             <img id="scene-image" src="shokudo.png" alt="背景">
             <div id="location-title">名学大 食堂</div>
         </div>
 
-        <div id="command-window" class="fami-window" id="cmd-win">
+        <div id="command-window" class="fami-window">
             <div id="main-commands">
                 <button class="cmd-btn" onclick="showLocations()">場所移動</button>
                 <button class="cmd-btn" onclick="showPeople()">人を呼ぶ</button>
@@ -169,7 +169,7 @@
         </div>
     </div>
 
-    <div id="text-window" class="fami-window" id="txt-win"></div>
+    <div id="text-window" class="fami-window"></div>
 </div>
 
 <script>
@@ -201,30 +201,32 @@
         } catch (e) { }
     }
     
-    // バッドエンド時の絶望的な効果音
     function playGameOverSound() {
         if (!audioCtx) return;
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc1 = audioCtx.createOscillator(); const osc2 = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
-        osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination); 
-        osc1.type = 'sawtooth'; osc2.type = 'square'; 
-        osc1.frequency.setValueAtTime(300, audioCtx.currentTime); osc1.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 2.5); 
-        osc2.frequency.setValueAtTime(320, audioCtx.currentTime); osc2.frequency.exponentialRampToValueAtTime(55, audioCtx.currentTime + 2.5); 
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5); 
-        osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 2.5); osc2.stop(audioCtx.currentTime + 2.5);
+        try {
+            const osc1 = audioCtx.createOscillator(); const osc2 = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
+            osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination); 
+            osc1.type = 'sawtooth'; osc2.type = 'square'; 
+            osc1.frequency.setValueAtTime(300, audioCtx.currentTime); osc1.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 2.5); 
+            osc2.frequency.setValueAtTime(320, audioCtx.currentTime); osc2.frequency.exponentialRampToValueAtTime(55, audioCtx.currentTime + 2.5); 
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5); 
+            osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 2.5); osc2.stop(audioCtx.currentTime + 2.5);
+        } catch(e) {}
     }
 
     function playTitleSound() {
         if (!audioCtx) return;
-        const osc1 = audioCtx.createOscillator(); const osc2 = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
-        osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination); 
-        osc1.type = 'sawtooth'; osc2.type = 'square'; 
-        osc1.frequency.setValueAtTime(110, audioCtx.currentTime); osc2.frequency.setValueAtTime(112, audioCtx.currentTime); 
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 3.5); 
-        osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 3.5); osc2.stop(audioCtx.currentTime + 3.5);
+        try {
+            const osc1 = audioCtx.createOscillator(); const osc2 = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
+            osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination); 
+            osc1.type = 'sawtooth'; osc2.type = 'square'; 
+            osc1.frequency.setValueAtTime(110, audioCtx.currentTime); osc2.frequency.setValueAtTime(112, audioCtx.currentTime); 
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 3.5); 
+            osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 3.5); osc2.stop(audioCtx.currentTime + 3.5);
+        } catch(e) {}
     }
 
-    // ★ 曲の準備 ★
     const endingMusic = new Audio('ending.mp3'); 
 
     // --- DOM要素 ---
@@ -318,26 +320,23 @@
     function showPeople() { const peopleHere = locationPeople[gameState.currentLocation]; if (peopleHere.length === 0) { printText("ここには誰もいないようだ。"); return; } buildSubMenu(peopleHere.map(person => ({ label: person, action: () => executeCommand('聞く', person) })), true); }
     function showCulprits() { buildSubMenu(allFriends.map(person => ({ label: person, isDanger: true, action: () => executeCommand('犯人', person) })), true); }
 
-    // ★ バッドエンドから復帰する関数（フリーズ修正済） ★
+    // ★ バッドエンドから復帰する関数 ★
     function restoreFromBadEnd() {
         playBeep('cancel');
         gameState.isGameOver = false;
         
-        // タイピングフラグを強制的に解除（ここがフリーズの原因でした）
         clearInterval(typingInterval);
         isTyping = false;
         
-        // 元の場所の画像とタイトルに戻す
         sceneImage.src = images[gameState.currentLocation];
         locationTitle.innerText = `名学大 ${gameState.currentLocation}`;
         locationTitle.classList.remove("game-over-title");
         
-        // 赤枠を外す
-        document.getElementById('img-win').classList.remove("game-over-border");
-        document.getElementById('txt-win').classList.remove("game-over-border");
-        document.getElementById('cmd-win').classList.remove("game-over-border");
+        // ★修正ポイント: 正しいIDを使用するようにしました！★
+        document.getElementById('image-window').classList.remove("game-over-border");
+        document.getElementById('text-window').classList.remove("game-over-border");
+        document.getElementById('command-window').classList.remove("game-over-border");
         
-        // テキストを瞬時に表示して、そのまま犯人選択画面を展開
         textArea.innerHTML = "気を取り直して、もう一度推理しよう……。\n誰が真犯人なんだ…？";
         showCulprits(); 
     }
@@ -391,13 +390,16 @@
                 // --- バッドエンド処理 ---
                 gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none'; 
                 sceneImage.src = images['ニュース']; locationTitle.innerText = "臨時ニュース"; locationTitle.classList.add("game-over-title"); 
-                document.getElementById('img-win').classList.add("game-over-border"); document.getElementById('txt-win').classList.add("game-over-border"); document.getElementById('cmd-win').classList.add("game-over-border"); 
+                
+                // ★修正ポイント: 正しいIDを使用するようにしました！★
+                document.getElementById('image-window').classList.add("game-over-border"); 
+                document.getElementById('text-window').classList.add("game-over-border"); 
+                document.getElementById('command-window').classList.add("game-over-border"); 
                 
                 playGameOverSound(); 
                 
                 response = `探偵「犯人はお前だ！ ${target}！」\n\n（臨時ニュース速報）\nアナウンサー『英太郎さんは、スズメバチに刺され ショック死しました』\n\n探偵「な、なんだってー！？ 事件じゃなかったのか…」\n\n【 BAD END - 推理失敗 】`; 
                 
-                // ★ 文字が全部表示されたら「戻る」ボタンを出す ★
                 printText(response, () => {
                     subCmdArea.style.display = 'grid';
                     subCmdArea.style.gridTemplateColumns = '1fr';
@@ -413,7 +415,6 @@
                     
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
                     
-                    // ★ 文字が全部表示されたら「ラーメン屋へ」ボタンを出す ★
                     printText(response, () => {
                         subCmdArea.style.display = 'grid';
                         subCmdArea.style.gridTemplateColumns = '1fr';
@@ -424,13 +425,11 @@
             } 
         } 
         else if (action === 'ラーメン屋') {
-            // === ラーメン屋突入 ===
             sceneImage.src = images['ラーメン屋'];
             locationTitle.innerText = "ゆきちゃんラーメン";
             subCmdArea.style.display = 'none';
             response = "＞ 【ゆきちゃんラーメン】へやってきた。\nそこには 鎖に繋がれ、白目を剥きながら無限に台湾ラーメンを作り続ける 英太郎の姿が！\n店長『体で 払ってもらってんだわ』\n探偵「……あの汁、台湾ラーメンだったのか……」";
             
-            // ★ 文字が全部表示されたら「エンディングへ」ボタンを出す ★
             printText(response, () => {
                 subCmdArea.style.display = 'grid';
                 subCmdArea.style.gridTemplateColumns = '1fr';
@@ -441,23 +440,17 @@
         printText(response);
     }
 
-    // ★ エンディング開始関数 ★
     function startEndingRoll() {
         playBeep('select');
         subCmdArea.style.display = 'none';
-        
-        // 音楽を再生
         endingMusic.play().catch(e => console.log("音声再生エラー", e));
         
-        // エンドロール画面を表示
         document.getElementById('end-roll-overlay').style.display = 'block';
         
-        // 160秒後（曲の終わりの直前）に羽ペン演出へ
         setTimeout(() => {
             document.getElementById('end-roll-overlay').style.display = 'none';
             document.getElementById('feather-pen-overlay').style.display = 'flex';
             
-            // 7秒後（文字アニメーション終了後）にリスタートボタンを表示
             setTimeout(() => {
                 document.getElementById('restart-btn-feather').style.display = 'block';
             }, 7000);
