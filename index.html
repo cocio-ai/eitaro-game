@@ -12,10 +12,11 @@
         @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -450%; } }
         #ed-cutin-image-window { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 320px; height: auto; aspect-ratio: 4 / 3; border: 4px double #fff; z-index: 410; background: #000; padding: 2px; }
         #ed-cutin-image { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
-        .cr-title { font-size: 30px; color: #ffeb3b; margin-top: 60px; margin-bottom: 100px; text-shadow: 2px 2px 0 #f00;}
+        .cr-title { font-size: 30px; color: #ffeb3b; margin-top: 60px; margin-bottom: 80px; text-shadow: 2px 2px 0 #f00;}
         .cr-role { font-size: 14px; color: #aaa; margin-top: 30px; }
         .cr-name { font-size: 20px; margin-bottom: 10px; color: #fff; }
         .cr-song-title { font-size: 24px; color: #fff; margin-bottom: 15px; text-shadow: 1px 1px 0 #888; }
+        .cr-history { font-size: 16px; color: #ddd; line-height: 1.8; margin-top: 10px; text-align: left; display: inline-block;}
         
         #feather-pen-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 500; display: none; flex-direction: column; justify-content: center; align-items: center; border: 6px double #fff; box-sizing: border-box; font-family: 'Kaisei Decol', serif; text-shadow: 2px 2px 3px rgba(255,255,255,0.5); }
         #wishing-text { font-size: 26px; line-height: 1.6; text-align: center; width: 0; overflow: hidden; white-space: nowrap; animation: typing 6s steps(40) forwards; animation-delay: 1s; }
@@ -92,16 +93,40 @@
             <div class="cr-role">制作</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">プログラム</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">総合プロデューサー</div><div class="cr-name">センズリコキお</div>
-            <div style="margin-top: 150px;"></div>
+            
+            <div style="margin-top: 100px;"></div>
+            
             <div class="cr-role">ＥＤテーマ</div><div class="cr-song-title">『英太郎のララバイ』</div>
             <div class="cr-role">歌詞</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">作曲</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">編曲</div><div class="cr-name">センズリコキお</div>
-            <div style="margin-top: 150px;"></div>
+            
+            <div style="margin-top: 100px;"></div>
+            
             <div class="cr-role">グラフィック協力</div><div class="cr-name">Gemini (Nano Banana 2)</div>
             <div class="cr-role">友情出演（奴隷労働）</div><div class="cr-name">英太郎</div>
-            <div class="cr-role">ロケ地協力</div><div class="cr-name">ゆきちゃんラーメン<br>（瀬戸キャンパス）</div>
-            <div style="margin-top: 250px;"></div>
+            <div class="cr-role">ロケ地協力</div>
+            <div class="cr-name">名古屋学院大学 瀬戸キャンパス<br>ゆきちゃんラーメン</div>
+            
+            <div style="margin-top: 150px;"></div>
+
+            <div class="cr-role" style="color: #ffeb3b; font-size: 18px;">【あの頃の記憶 1997-2000】</div>
+            <div class="cr-history">
+                1997年：消費税5%へ引き上げ<br>
+                　　　　「たまごっち」大ブーム<br>
+                　　　　もののけ姫 記録的大ヒット<br><br>
+                1998年：長野オリンピック開催<br>
+                　　　　宇多田ヒカル デビュー<br>
+                　　　　横浜高校 松坂大輔 春夏連覇<br><br>
+                1999年：ノストラダムスの大予言<br>
+                　　　　「iモード」サービス開始<br>
+                　　　　だんご3兄弟 大ヒット<br><br>
+                2000年：2000年問題（Y2K）<br>
+                　　　　プレイステーション2 発売<br>
+                　　　　シドニー五輪 高橋尚子 金メダル
+            </div>
+            
+            <div style="margin-top: 300px;"></div>
         </div>
     </div>
 
@@ -123,7 +148,7 @@
             <div id="main-commands">
                 <button class="cmd-btn" onclick="showLocations()">場所移動</button>
                 <button class="cmd-btn" onclick="showPeople()">人を呼ぶ</button>
-                <button class="cmd-btn" onclick="executeCommand('調べる', '辺り')">辺りを調べる</button>
+                <button class="cmd-btn" onclick="showInvestigateSpots()">辺りを調べる</button>
                 <button class="cmd-btn special-btn" onclick="executeCommand('謎を解く', '蟹江')" id="cmd-puzzle" style="display:none;">謎を解く</button>
                 <button class="cmd-btn danger-btn" onclick="showCulprits()">犯人を指名する</button>
             </div>
@@ -135,7 +160,6 @@
 </div>
 
 <script>
-    // --- 効果音ジェネレーター ---
     let audioCtx;
     function initAudio() {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -153,7 +177,6 @@
         } catch (e) {}
     }
     
-    // 衝撃の効果音（ジャーン！）
     function playShockSound() {
         if (!audioCtx) return;
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -195,14 +218,6 @@
 
     const endingMusic = new Audio('ending.mp3'); 
 
-    // --- DOM要素 ---
-    const textArea = document.getElementById('text-window');
-    const mainCmdArea = document.getElementById('main-commands');
-    const subCmdArea = document.getElementById('sub-commands');
-    const cmdPuzzle = document.getElementById('cmd-puzzle');
-    const sceneImage = document.getElementById('scene-image');
-    const locationTitle = document.getElementById('location-title');
-
     // --- ゲームデータ ---
     const images = {
         '校門': 'https://via.placeholder.com/320x240/000000/ffffff?text=Main+Gate',
@@ -216,7 +231,14 @@
     const locationPeople = { '校門': [], '食堂': ['井口', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
     const allFriends = ["井口", "加藤", "近藤", "櫛田", "高井", "秋葉", "蟹江"];
     
-    // キャラクターの個性を爆発させた長文セリフ
+    // ★ 各場所の「調べる」スポット ★
+    const investigateSpots = {
+        '校門': ['看板', '古びたポスト'],
+        '食堂': ['テーブル', '券売機'],
+        '喫煙所': ['灰皿', '自販機'],
+        'チャペル': ['祭壇', 'ステンドグラス']
+    };
+
     const testimonies = {
         "井口": "井口「い、英太郎が死んだ！？ そ、そんな……！\nお、俺は何も知らないぞ！ 昨日の夜、ちょっと飲みすぎただけで……あわわわ！」\n\n＞ 井口は滝のような汗をかき、目が泳ぎまくっている。",
         "加藤": "加藤「現場の状況はまるで映画『セブン』だな。\nだが英太郎はダイ・ハードのマクレーン刑事並みにしぶとい男だ。絶対『イピカイエー』って言いながら帰ってくるさ！\nそういやあいつ、最近『四角、三角、丸』の順番がどうのって、ダ・ヴィンチ・コードみたいにブツブツ言ってたな」", 
@@ -233,14 +255,19 @@
         clues: { koumon: false, shokudo: false, kitsuenjo: false, chapel: false }, 
         puzzleCleared: false, 
         isGameOver: false,
-        // チュートリアル用の初回訪問フラグ
         firstTimeCafeteria: true,
         firstTimeSmoking: true,
         firstTimeChapel: true
     };
+    
+    const textArea = document.getElementById('text-window');
+    const mainCmdArea = document.getElementById('main-commands');
+    const subCmdArea = document.getElementById('sub-commands');
+    const cmdPuzzle = document.getElementById('cmd-puzzle');
+    const sceneImage = document.getElementById('scene-image');
+    const locationTitle = document.getElementById('location-title');
     let typingInterval; let isTyping = false;
 
-    // パスコードチェック
     function showPasscodeScreen() {
         document.getElementById('start-overlay').style.display = 'none';
         document.getElementById('passcode-overlay').style.display = 'flex';
@@ -259,7 +286,6 @@
         }
     }
 
-    // === テキスト表示 ===
     function printText(text, callback = null) {
         clearInterval(typingInterval); 
         textArea.innerHTML = ""; 
@@ -268,7 +294,7 @@
         
         typingInterval = setInterval(() => {
             textArea.innerHTML += text.charAt(i);
-            if (i % 5 === 0) playBeep('text'); 
+            if (i % 4 === 0) playBeep('text'); 
             textArea.scrollTop = textArea.scrollHeight;
             i++;
             if (i >= text.length) { 
@@ -279,7 +305,6 @@
         }, 30); 
     }
 
-    // === UI切り替え ===
     function showMainMenu() { 
         if (gameState.isGameOver) return; 
         subCmdArea.style.display = 'none'; 
@@ -315,6 +340,12 @@
     function showLocations() { buildSubMenu(["校門", "食堂", "喫煙所", "チャペル"].filter(loc => loc !== gameState.currentLocation).map(loc => ({ label: loc, action: () => executeCommand('場所移動', loc) }))); }
     function showPeople() { const peopleHere = locationPeople[gameState.currentLocation]; if (peopleHere.length === 0) { printText("ここには誰もいないようだ。"); return; } buildSubMenu(peopleHere.map(person => ({ label: person, action: () => executeCommand('聞く', person) })), true); }
     function showCulprits() { buildSubMenu(allFriends.map(person => ({ label: person, isDanger: true, action: () => executeCommand('犯人', person) })), true); }
+    
+    // ★ 新設: 辺りを調べる際のサブメニュー ★
+    function showInvestigateSpots() {
+        const spots = investigateSpots[gameState.currentLocation];
+        buildSubMenu(spots.map(spot => ({ label: spot, action: () => executeCommand('調べる', spot) })));
+    }
 
     function restoreFromBadEnd() {
         playBeep('cancel');
@@ -332,18 +363,16 @@
         showCulprits(); 
     }
 
-    // === コマンド実行 ===
     function executeCommand(action, target) {
         if (isTyping || gameState.isGameOver) return;
         let response = "";
         
         if (action === '場所移動') { 
-            gameState.currentLocation = target; sceneImage.src = images[target]; locationTitle.innerText = `名学大 ${target}`; 
+            gameState.currentLocation = target; sceneImage.src = images[target]; locationTitle.innerText = `名学大 瀬戸CP ${target}`; 
             
-            // ★ 各場所の初回訪問時チュートリアル ★
             if (target === '食堂' && gameState.firstTimeCafeteria) {
                 gameState.firstTimeCafeteria = false;
-                playShockSound(); // ジャーン！という音
+                playShockSound(); 
                 response = "＞ 【食堂】へ移動した。\n\n探偵「な、なんだこれは！？」\n\n＞ テーブルの上に、赤い液体で『英太郎が殺された・・・』と書かれている！\n\n探偵「まさか、英太郎の身に何かが…！？\nおい、そこのお前たち！ 詳しい話を聞かせろ！」\n\n【チュートリアル：『人を呼ぶ』から話を聞いてみよう】";
             } else if (target === '喫煙所' && gameState.firstTimeSmoking) {
                 gameState.firstTimeSmoking = false;
@@ -360,26 +389,61 @@
             response = `＞ ${target} の証言を聞いた。\n\n${testimonies[target]}`; 
         } 
         else if (action === '調べる') { 
+            // 謎解き要素の強化（各スポットごとの固有テキスト）
             if (gameState.currentLocation === '校門') { 
-                response = "＞ 校門の看板の裏を調べた。\n\n暗号の文字【 か 】を発見した！"; gameState.clues.koumon = true;
+                if (target === '看板') {
+                    response = "＞ 校門の看板を調べた。\n『名古屋学院大学 瀬戸キャンパス』と書かれている。\n裏には何も無いようだ。";
+                } else if (target === '古びたポスト') {
+                    setTimeout(() => {
+                        let code = prompt("ポストには南京錠がかかっている。\n『ゲーム開始時に入力したパスコードを入力せよ』");
+                        if (code === "0921") {
+                            playBeep('select');
+                            printText("＞ カチャッ！ 南京錠が開いた！\n中には 古いメモが入っており、暗号の文字【 か 】を発見した！");
+                            gameState.clues.koumon = true;
+                        } else if (code !== null) {
+                            printText("＞ 番号が違うようだ。開かない。");
+                        }
+                    }, 100); return;
+                }
             } else if (gameState.currentLocation === '食堂') { 
-                response = "＞ 食堂のテーブルを調べた。\n\nスパイシーな赤い液体で『英太郎が殺された』とあり、\nその横に暗号の文字【 わ 】が書かれている！"; gameState.clues.shokudo = true;
+                if (target === 'テーブル') {
+                    response = "＞ 食堂のテーブルを調べた。\n\nスパイシーな赤い液体で『英太郎が殺された』と書かれている。\n匂いからして、間違いなく台湾ラーメンの汁だ。";
+                } else if (target === '券売機') {
+                    response = "＞ 券売機を調べた。\n\n売り切れランプが不自然に点滅している。\nよく見るとモールス信号だ……。\n解読すると、暗号の文字【 わ 】になった！";
+                    gameState.clues.shokudo = true;
+                }
             } else if (gameState.currentLocation === '喫煙所') { 
-                response = "＞ 灰皿の裏を調べた。\n\n暗号の文字【 か 】を発見した！"; gameState.clues.kitsuenjo = true; 
+                if (target === '自販機') {
+                    response = "＞ 自販機の下を覗き込んだ。\n\nホコリまみれの10円玉が落ちているだけだ。";
+                } else if (target === '灰皿') {
+                    response = "＞ 灰皿の裏を調べた。\n\n誰かがガムで貼り付けた 汚いメモを発見した！\n暗号の文字【 か 】と書かれている。";
+                    gameState.clues.kitsuenjo = true; 
+                }
             } else if (gameState.currentLocation === 'チャペル') { 
-                if (!gameState.kanieFound) { 
-                    playShockSound();
-                    response = "＞ チャペルの祭壇の裏を調べた。\n\n探偵「うわっ！」\n\n＞ なんと、暗闇に隠れていた【蟹江】を発見した！\n（『人を呼ぶ』コマンドから、蟹江の話を聞けるようになった！）"; gameState.kanieFound = true; locationPeople['チャペル'].push('蟹江'); showMainMenu(); 
-                } else { 
-                    response = "＞ チャペルの長椅子を調べた。\n\n暗号の文字【 み 】を発見した！"; gameState.clues.chapel = true;
-                } 
+                if (target === '祭壇') {
+                    if (!gameState.kanieFound) { 
+                        playShockSound();
+                        response = "＞ チャペルの祭壇の裏を調べた。\n\n探偵「うわっ！」\n\n＞ なんと、暗闇に隠れていた【蟹江】を発見した！\n（『人を呼ぶ』コマンドから、蟹江の話を聞けるようになった！）"; 
+                        gameState.kanieFound = true; locationPeople['チャペル'].push('蟹江'); showMainMenu(); 
+                    } else {
+                        response = "＞ 祭壇を調べた。\n蟹江がニヤニヤしながら こちらを見ている。";
+                    }
+                } else if (target === 'ステンドグラス') {
+                    response = "＞ ステンドグラスを調べた。\n\n差し込む光の先を 床でたどると、\n一枚のタイルに 暗号の文字【 み 】が彫られていた！";
+                    gameState.clues.chapel = true;
+                }
             }
         } 
         else if (action === '謎を解く') { 
+            // 全てのヒントを見つけていないと弾かれる
+            if (!(gameState.clues.koumon && gameState.clues.shokudo && gameState.clues.kitsuenjo && gameState.clues.chapel)) {
+                printText("蟹江「おいおい、まだ全部の文字を見つけてないだろ？\n校門、食堂、喫煙所、チャペルを くまなく調べてから来な」");
+                return;
+            }
             setTimeout(() => { 
                 let code = prompt("蟹江「校門、食堂、喫煙所、チャペルに隠された\n4文字の ひらがな を入力しろ」"); 
                 if (code === "かわかみ") { 
-                    playBeep('select'); printText("蟹江「正解だ。よく見つけたな。\n約束通り【テキーラの空瓶】を渡そう」\n\n＞ これで全ての証拠が揃ったはずだ！"); gameState.puzzleCleared = true; showMainMenu(); 
+                    playBeep('select'); printText("蟹江「正解だ。よく見つけたな。\n約束通り 決定的な証拠【テキーラの空瓶】を渡そう」\n\n＞ これで全ての証拠が揃ったはずだ！"); gameState.puzzleCleared = true; showMainMenu(); 
                 } else if (code !== null) { 
                     printText("蟹江「フッ、全然違うな。ひらがな4文字だぞ」"); 
                 } 
@@ -392,7 +456,6 @@
                 document.getElementById('image-window').classList.add("game-over-border"); document.getElementById('text-window').classList.add("game-over-border"); document.getElementById('command-window').classList.add("game-over-border"); 
                 playGameOverSound(); 
                 
-                // バッドエンド死因分岐
                 let deathReason = "";
                 if (target === '加藤' || target === '秋葉') deathReason = "スズメバチに刺され ショック死";
                 else if (target === '近藤' || target === '櫛田') deathReason = "ミネラルウォーターの飲み過ぎで 水中毒死";
@@ -406,7 +469,6 @@
                 });
                 return;
             } else { 
-                // 正解（井口）処理
                 if (!gameState.puzzleCleared) { 
                     response = "探偵「井口！ お前が犯人だ！」\n井口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない。"; 
                 } else { 
@@ -423,7 +485,6 @@
         printText(response);
     }
 
-    // ★ 感動のエンディングカットシーン（叙述トリック版） ★
     let endingPhase = 0;
     const endingTexts = [
         "＞ 探偵と残されたメンバーたちは、名古屋名物の台湾ラーメンを食べに ある店にやってきた。",
@@ -472,14 +533,13 @@
         }, 160000); 
     }
 
-    // ★ 冒頭のテキスト（チュートリアル案内付き） ★
     function startGame() { 
         const titleOverlay = document.getElementById('title-overlay'); 
         titleOverlay.style.display = 'flex'; 
         playTitleSound(); 
         setTimeout(() => { 
             titleOverlay.style.display = 'none'; 
-            printText("時は1997年、愛知県瀬戸市。\n俺は 私立探偵。\nある人物の素行調査で、この『名学大』の校門に やってきた。\n\nすれ違う男子学生は やけに髪が長いし、\nすれ違いざまに見た 携帯電話は やたらと分厚く アンテナが伸びている。\nどこか 懐かしいような、不思議な感覚だ。\n\n俺は 探偵として、まずは学内を調べてみることにした。\nよし、まずは【食堂】に行ってみよう。\n\n【チュートリアル：『場所移動』から 食堂 を選んでください】"); 
+            printText("時は1997年、愛知県瀬戸市。\n俺は 私立探偵。\nある人物の素行調査で、この『名学大 瀬戸キャンパス』の校門に やってきた。\n\nすれ違う男子学生は やけに髪が長いし、\n携帯電話は やたらと分厚く アンテナが伸びている。\nどこか 懐かしいような、不思議な感覚だ。\n\n俺は 探偵として、まずは学内を調べてみることにした。\nよし、まずは【食堂】に行ってみよう。\n\n【チュートリアル：『場所移動』から 食堂 を選んでください】"); 
         }, 3500); 
     }
 </script>
