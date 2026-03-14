@@ -152,6 +152,22 @@
             else if (type === 'cancel') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.05); }
         } catch (e) {}
     }
+    
+    // 衝撃の効果音（ジャーン！）
+    function playShockSound() {
+        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        try {
+            const osc1 = audioCtx.createOscillator(); const osc2 = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
+            osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination); 
+            osc1.type = 'sawtooth'; osc2.type = 'square'; 
+            osc1.frequency.setValueAtTime(800, audioCtx.currentTime); osc1.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.5); 
+            osc2.frequency.setValueAtTime(850, audioCtx.currentTime); osc2.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.5); 
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5); 
+            osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 0.5); osc2.stop(audioCtx.currentTime + 0.5);
+        } catch(e) {}
+    }
+
     function playGameOverSound() {
         if (!audioCtx) return;
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -197,18 +213,18 @@
         'ラーメン屋': 'yukichan_counter.png'
     };
     
-    // 校門を追加
     const locationPeople = { '校門': [], '食堂': ['井口', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
     const allFriends = ["井口", "加藤", "近藤", "櫛田", "高井", "秋葉", "蟹江"];
     
+    // キャラクターの個性を爆発させた長文セリフ
     const testimonies = {
-        "井口": "井口「えっ！？ 英太郎が死んだ！？\nそ、そんな…… 俺はなにも知らないぞ！！」",
-        "加藤": "加藤「現場の状況はまるで映画『ソウ』だな。\nだが英太郎はマクレーンみたいな奴だ。絶対 生き残るさ」", 
-        "近藤": "近藤「嘘だろ？ 英太郎が？\n高校野球部上がりの俺より体力あったのになぁ。\nあいつ、とびきりスパイシーなメシを 奢る約束だったのに……」",
-        "櫛田": "櫛田「チッ、あのバカ。 勝手に死ぬとか マジで許さねえぞ。\n俺の愛あるイジりが無いと寂しいくせによ……」",
-        "高井": "高井「たまごっちの世話で忙しいのに……。\nそういや あいつ 最近『ニンニクの匂いが取れない』って悩んでたな」",
-        "秋葉": "秋葉「オデが名古屋に 出てきた時、\n英太郎が『真っ赤な看板』の 小せぇ店で 飯奢ってくれたんだ」",
-        "蟹江": "蟹江「見つかっちまったか……。\n証拠の【テキーラの空瓶】は 隠した。\n校門・食堂・喫煙所・チャペルに隠した4文字のパスを当ててみろ」"
+        "井口": "井口「い、英太郎が死んだ！？ そ、そんな……！\nお、俺は何も知らないぞ！ 昨日の夜、ちょっと飲みすぎただけで……あわわわ！」\n\n＞ 井口は滝のような汗をかき、目が泳ぎまくっている。",
+        "加藤": "加藤「現場の状況はまるで映画『セブン』だな。\nだが英太郎はダイ・ハードのマクレーン刑事並みにしぶとい男だ。絶対『イピカイエー』って言いながら帰ってくるさ！\nそういやあいつ、最近『四角、三角、丸』の順番がどうのって、ダ・ヴィンチ・コードみたいにブツブツ言ってたな」", 
+        "近藤": "近藤「嘘だろ？ 英太郎が？\n高校でゴリゴリの野球部だった俺より体力オバケだったのに！？\nあいつ、俺がノート貸してやったお礼に『とびきりスパイシーなメシ』を奢ってくれる約束だったんだぞ！\n悲しいし腹は減るし、どうしてくれんだよ！」",
+        "櫛田": "櫛田「チッ、あのバカ。勝手に死ぬとかマジで許さねえぞ。\n俺の愛あるイジりをノーリアクションで受け流せるのは あいつくらいだったのによ……。\nおい探偵、俺の最高のオモチャを奪った犯人を早く見つけろ。ボコボコにしてやる」",
+        "高井": "高井「えっ、マジで？\n俺いま たまごっちの世話とPHSの着メロ作りで超忙しいんだけど……。\nあ、そういや あいつ最近『ニンニクの匂いが取れない』ってシャンプー3回もしてたな。\n事件と関係ある？ 吸血鬼にでも襲われたの？」",
+        "秋葉": "秋葉「オ、オデ信じらんねぇ！\nオデが名古屋に出てきて右も左も分かんねぇ時、英太郎が『真っ赤な看板』の小せぇ店で 飯奢ってくれたんだ！\n汗ダラダラ流しながら食う、スゲェ辛いラーメン……\nオデ、まだお礼も言えてねぇのに！うわあああん！」",
+        "蟹江": "蟹江「ククク……見つかっちまったか。\n俺がこの大学の裏ボス、蟹江だ。\n英太郎の事件か……決定的な証拠【テキーラの空瓶】は俺が隠した。\n欲しければ、校門・食堂・喫煙所・チャペルに隠された『4文字のひらがな』を導き出してみろ」"
     };
 
     let gameState = { 
@@ -216,7 +232,11 @@
         kanieFound: false, 
         clues: { koumon: false, shokudo: false, kitsuenjo: false, chapel: false }, 
         puzzleCleared: false, 
-        isGameOver: false 
+        isGameOver: false,
+        // チュートリアル用の初回訪問フラグ
+        firstTimeCafeteria: true,
+        firstTimeSmoking: true,
+        firstTimeChapel: true
     };
     let typingInterval; let isTyping = false;
 
@@ -319,7 +339,22 @@
         
         if (action === '場所移動') { 
             gameState.currentLocation = target; sceneImage.src = images[target]; locationTitle.innerText = `名学大 ${target}`; 
-            response = `＞ 【${target}】へ移動した。\nどうする？`; showMainMenu(); 
+            
+            // ★ 各場所の初回訪問時チュートリアル ★
+            if (target === '食堂' && gameState.firstTimeCafeteria) {
+                gameState.firstTimeCafeteria = false;
+                playShockSound(); // ジャーン！という音
+                response = "＞ 【食堂】へ移動した。\n\n探偵「な、なんだこれは！？」\n\n＞ テーブルの上に、赤い液体で『英太郎が殺された・・・』と書かれている！\n\n探偵「まさか、英太郎の身に何かが…！？\nおい、そこのお前たち！ 詳しい話を聞かせろ！」\n\n【チュートリアル：『人を呼ぶ』から話を聞いてみよう】";
+            } else if (target === '喫煙所' && gameState.firstTimeSmoking) {
+                gameState.firstTimeSmoking = false;
+                response = "＞ 【喫煙所】へ移動した。\n\n探偵「あれ、ここにも英太郎の友達らしき奴らが たむろしてるぞ。\nよし、こいつらからも 話を聞いてみるか」\n\n【チュートリアル：それぞれのメンバーから話を聞こう】";
+            } else if (target === 'チャペル' && gameState.firstTimeChapel) {
+                gameState.firstTimeChapel = false;
+                response = "＞ 【チャペル】へ移動した。\n\n探偵「あれっ、誰もいないぞ……。\nいや、待てよ。 静かすぎる。それに、なんとなく 誰かの気配がするなぁ……」\n\n【チュートリアル：『辺りを調べる』コマンドを使ってみよう】";
+            } else {
+                response = `＞ 【${target}】へ移動した。\nどうする？`; 
+            }
+            showMainMenu(); 
         } 
         else if (action === '聞く') { 
             response = `＞ ${target} の証言を聞いた。\n\n${testimonies[target]}`; 
@@ -333,7 +368,8 @@
                 response = "＞ 灰皿の裏を調べた。\n\n暗号の文字【 か 】を発見した！"; gameState.clues.kitsuenjo = true; 
             } else if (gameState.currentLocation === 'チャペル') { 
                 if (!gameState.kanieFound) { 
-                    response = "＞ チャペルの祭壇の裏を調べた。\n隠れていた【蟹江】を発見した！\n（「人を呼ぶ」で話を聞ける！）"; gameState.kanieFound = true; locationPeople['チャペル'].push('蟹江'); showMainMenu(); 
+                    playShockSound();
+                    response = "＞ チャペルの祭壇の裏を調べた。\n\n探偵「うわっ！」\n\n＞ なんと、暗闇に隠れていた【蟹江】を発見した！\n（『人を呼ぶ』コマンドから、蟹江の話を聞けるようになった！）"; gameState.kanieFound = true; locationPeople['チャペル'].push('蟹江'); showMainMenu(); 
                 } else { 
                     response = "＞ チャペルの長椅子を調べた。\n\n暗号の文字【 み 】を発見した！"; gameState.clues.chapel = true;
                 } 
@@ -343,7 +379,7 @@
             setTimeout(() => { 
                 let code = prompt("蟹江「校門、食堂、喫煙所、チャペルに隠された\n4文字の ひらがな を入力しろ」"); 
                 if (code === "かわかみ") { 
-                    playBeep('select'); printText("蟹江「正解だ。よく見つけたな。\n約束通り【テキーラの空瓶】を渡そう」"); gameState.puzzleCleared = true; showMainMenu(); 
+                    playBeep('select'); printText("蟹江「正解だ。よく見つけたな。\n約束通り【テキーラの空瓶】を渡そう」\n\n＞ これで全ての証拠が揃ったはずだ！"); gameState.puzzleCleared = true; showMainMenu(); 
                 } else if (code !== null) { 
                     printText("蟹江「フッ、全然違うな。ひらがな4文字だぞ」"); 
                 } 
@@ -362,7 +398,7 @@
                 else if (target === '近藤' || target === '櫛田') deathReason = "ミネラルウォーターの飲み過ぎで 水中毒死";
                 else if (target === '高井' || target === '蟹江') deathReason = "なめこの食べ過ぎで 中毒死";
 
-                response = `探偵「犯人はお前だ！ ${target}！」\n${target}「証拠あんのかよ！」\n\n（臨時ニュース）\nアナウンサー『英太郎さんは、${deathReason}しました』\n\n探偵「な、なんだってー！？ 事件じゃなかったのか…」\n\n【 BAD END - 推理失敗 】`; 
+                response = `探偵「犯人はお前だ！ ${target}！」\n${target}「はぁ？ 証拠あんのかよ！」\n\n（ピピピピ…！ 探偵の携帯に臨時ニュース速報が入る）\n\nアナウンサー『英太郎さんは、${deathReason}しました』\n\n探偵「な、なんだってー！？ 殺人事件じゃなかったのか…」\n\n【 BAD END - 推理失敗 】`; 
                 
                 printText(response, () => {
                     subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr';
@@ -374,7 +410,7 @@
                 if (!gameState.puzzleCleared) { 
                     response = "探偵「井口！ お前が犯人だ！」\n井口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない。"; 
                 } else { 
-                    response = "探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n＞ 井口は逃亡した！\n置き手紙には『あいつに飲ませすぎた。すまない』とあった。\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 探偵たちは大学を出ることにした……。"; 
+                    response = "探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n＞ 井口は猛ダッシュで逃亡した！\n置き手紙には『あいつに飲ませすぎた。すまない』とあった。\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 探偵たちは 井口を追うのを諦め、大学を出ることにした……。"; 
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
                     printText(response, () => {
                         subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr';
@@ -436,14 +472,14 @@
         }, 160000); 
     }
 
-    // ★ 冒頭のテキスト（時代背景を自然に・主人公の正体を伏せる） ★
+    // ★ 冒頭のテキスト（チュートリアル案内付き） ★
     function startGame() { 
         const titleOverlay = document.getElementById('title-overlay'); 
         titleOverlay.style.display = 'flex'; 
         playTitleSound(); 
         setTimeout(() => { 
             titleOverlay.style.display = 'none'; 
-            printText("時は1997年、愛知県瀬戸市。\n俺は 私立探偵。\nある人物の素行調査で、この『名学大』に やってきた。\n\nすれ違う男子学生は やけに髪が長いし、\nすれ違いざまに見た 携帯電話は やたらと分厚く アンテナが伸びている。\nどこか 懐かしいような、不思議な感覚だ。\n\nそんな矢先、ターゲットである『英太郎』が\n事件に巻き込まれたという 噂を耳にした。\n\n俺は 探偵として、彼の友人たちに 話を聞くことにした。"); 
+            printText("時は1997年、愛知県瀬戸市。\n俺は 私立探偵。\nある人物の素行調査で、この『名学大』の校門に やってきた。\n\nすれ違う男子学生は やけに髪が長いし、\nすれ違いざまに見た 携帯電話は やたらと分厚く アンテナが伸びている。\nどこか 懐かしいような、不思議な感覚だ。\n\n俺は 探偵として、まずは学内を調べてみることにした。\nよし、まずは【食堂】に行ってみよう。\n\n【チュートリアル：『場所移動』から 食堂 を選んでください】"); 
         }, 3500); 
     }
 </script>
