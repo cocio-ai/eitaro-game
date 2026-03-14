@@ -6,59 +6,27 @@
     <title>英太郎殺人事件 - 名学と友情の挽歌</title>
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Kaisei+Decol:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* --- エンディング・エンドロール用のCSS --- */
-        #end-roll-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; color: #fff; z-index: 400; display: none; 
-            overflow: hidden; text-align: center; border: 6px double #fff; box-sizing: border-box;
-        }
-
-        #end-roll-credits {
-            position: absolute; width: 100%; top: 100%;
-            animation: scrollCredits 166s linear forwards; 
-            padding-bottom: 200px; 
-        }
-        @keyframes scrollCredits {
-            0% { top: 100%; }
-            100% { top: -450%; } 
-        }
-
-        #ed-cutin-image-window {
-            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
-            width: 320px; height: auto; aspect-ratio: 4 / 3; 
-            border: 4px double #fff; z-index: 410; background: #000; padding: 2px;
-        }
+        /* --- エンディング・演出用CSS --- */
+        #end-roll-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 400; display: none; overflow: hidden; text-align: center; border: 6px double #fff; box-sizing: border-box; }
+        #end-roll-credits { position: absolute; width: 100%; top: 100%; animation: scrollCredits 166s linear forwards; padding-bottom: 200px; }
+        @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -450%; } }
+        #ed-cutin-image-window { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 320px; height: auto; aspect-ratio: 4 / 3; border: 4px double #fff; z-index: 410; background: #000; padding: 2px; }
         #ed-cutin-image { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
-
         .cr-title { font-size: 30px; color: #ffeb3b; margin-top: 60px; margin-bottom: 100px; text-shadow: 2px 2px 0 #f00;}
         .cr-role { font-size: 14px; color: #aaa; margin-top: 30px; }
         .cr-name { font-size: 20px; margin-bottom: 10px; color: #fff; }
         .cr-song-title { font-size: 24px; color: #fff; margin-bottom: 15px; text-shadow: 1px 1px 0 #888; }
+        
+        #feather-pen-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 500; display: none; flex-direction: column; justify-content: center; align-items: center; border: 6px double #fff; box-sizing: border-box; font-family: 'Kaisei Decol', serif; text-shadow: 2px 2px 3px rgba(255,255,255,0.5); }
+        #wishing-text { font-size: 26px; line-height: 1.6; text-align: center; width: 0; overflow: hidden; white-space: nowrap; animation: typing 6s steps(40) forwards; animation-delay: 1s; }
+        #restart-btn-feather { display: none; margin-top: 60px; background: none; border: 2px solid #fff; color: #fff; font-size: 18px; font-family: 'DotGothic16'; cursor: pointer; padding: 10px 20px; }
+        @keyframes typing { from { width: 0; } to { width: 100%; } }
 
-        /* 羽ペンの最終演出画面 */
-        #feather-pen-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; color: #fff; z-index: 500; display: none;
-            flex-direction: column; justify-content: center; align-items: center;
-            border: 6px double #fff; box-sizing: border-box;
-            font-family: 'Kaisei Decol', serif; 
-            text-shadow: 2px 2px 3px rgba(255,255,255,0.5);
-        }
-        #wishing-text {
-            font-size: 26px; line-height: 1.6; text-align: center;
-            width: 0; overflow: hidden; white-space: nowrap; 
-            animation: typing 6s steps(40) forwards; 
-            animation-delay: 1s; 
-        }
-        #restart-btn-feather {
-            display: none; margin-top: 60px; background: none; border: 2px solid #fff; color: #fff; font-size: 18px; font-family: 'DotGothic16'; cursor: pointer; padding: 10px 20px;
-        }
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; } 
-        }
+        /* --- パスコード画面用CSS --- */
+        #passcode-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 350; display: none; flex-direction: column; justify-content: center; align-items: center; border: 6px double #fff; box-sizing: border-box; text-align: center; }
+        #pass-input { font-family: 'DotGothic16'; font-size: 24px; width: 120px; text-align: center; padding: 5px; background: #111; color: #0f0; border: 2px solid #555; outline: none; letter-spacing: 5px; }
 
-        /* --- 既存のゲーム用CSS --- */
+        /* --- 既存ゲーム用CSS --- */
         :root { --fami-border-size: 4px; }
         body { background-color: #000; color: #fff; font-family: 'DotGothic16', sans-serif; display: flex; justify-content: center; align-items: flex-start; height: 100vh; margin: 0; user-select: none; touch-action: manipulation; overflow: hidden; }
         #game-wrapper { width: 100%; max-width: 480px; height: 100%; display: flex; flex-direction: column; gap: 4px; position: relative; padding: 4px; box-sizing: border-box; }
@@ -76,13 +44,11 @@
         .cmd-btn::before { content: '　'; margin-right: 2px; flex-shrink: 0; }
         .cmd-btn:hover::before { content: '▶'; color: #fff; }
         .btn-back { border-color: #888; color: #ccc; }
-        
         .special-btn { color: #ffeb3b; border-color: #ffeb3b; }
         .special-btn:hover::before { color: #ffeb3b; }
         .danger-btn { color: #ff5555; border-color: #ff5555; }
         .danger-btn:hover::before { color: #ff5555; }
         
-        /* ゲームオーバー演出 */
         .game-over-border { border-color: #ff0000 !important; }
         .game-over-title { background-color: #ff0000 !important; color: #fff !important; }
         
@@ -98,8 +64,16 @@
 <body>
 
 <div id="game-wrapper">
-    <div id="start-overlay" onclick="startGame()">
+    <div id="start-overlay" onclick="showPasscodeScreen()">
         <span class="blink">▶ 画面をタップして スタート</span>
+    </div>
+
+    <div id="passcode-overlay">
+        <div style="font-size:24px; margin-bottom: 20px; color:#ffeb3b;">SYSTEM SECURITY</div>
+        <div style="margin-bottom: 20px;">パスコードを入力してください</div>
+        <input type="password" id="pass-input" maxlength="4" placeholder="****">
+        <button class="cmd-btn" style="border: 2px solid #fff; padding: 10px 30px; margin-top: 20px;" onclick="checkPasscode()">解除</button>
+        <div id="pass-error" style="color:#f00; margin-top:15px; display:none;">ACCESS DENIED</div>
     </div>
 
     <div id="title-overlay">
@@ -111,34 +85,22 @@
         <div id="ed-cutin-image-window">
             <img id="ed-cutin-image" src="https://via.placeholder.com/320x240/000000/ffffff?text=ED+Image" alt="カットイン画像">
         </div>
-        
         <div id="end-roll-credits">
             <div class="cr-title">英太郎殺人事件<br>〜名学と友情の挽歌〜</div>
-            
             <div class="cr-role">企画</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">脚本</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">制作</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">プログラム</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">総合プロデューサー</div><div class="cr-name">センズリコキお</div>
-
             <div style="margin-top: 150px;"></div>
-
             <div class="cr-role">ＥＤテーマ</div><div class="cr-song-title">『英太郎のララバイ』</div>
             <div class="cr-role">歌詞</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">作曲</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">編曲</div><div class="cr-name">センズリコキお</div>
-
             <div style="margin-top: 150px;"></div>
-
-            <div class="cr-role">グラフィック協力</div>
-            <div class="cr-name">Gemini (Nano Banana 2)</div>
-
-            <div class="cr-role">友情出演（奴隷労働）</div>
-            <div class="cr-name">英太郎</div>
-
-            <div class="cr-role">ロケ地協力</div>
-            <div class="cr-name">ゆきちゃんラーメン<br>（瀬戸キャンパス）</div>
-
+            <div class="cr-role">グラフィック協力</div><div class="cr-name">Gemini (Nano Banana 2)</div>
+            <div class="cr-role">友情出演（奴隷労働）</div><div class="cr-name">英太郎</div>
+            <div class="cr-role">ロケ地協力</div><div class="cr-name">ゆきちゃんラーメン<br>（瀬戸キャンパス）</div>
             <div style="margin-top: 250px;"></div>
         </div>
     </div>
@@ -153,8 +115,8 @@
 
     <div id="top-row">
         <div id="image-window" class="fami-window">
-            <img id="scene-image" src="shokudo.png" alt="背景">
-            <div id="location-title">名学大 食堂</div>
+            <img id="scene-image" src="https://via.placeholder.com/320x240/000000/ffffff?text=Main+Gate" alt="背景">
+            <div id="location-title">名学大 校門</div>
         </div>
 
         <div id="command-window" class="fami-window">
@@ -173,7 +135,7 @@
 </div>
 
 <script>
-    // --- 効果音ジェネレーター（安定化版） ---
+    // --- 効果音ジェネレーター ---
     let audioCtx;
     function initAudio() {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -185,22 +147,11 @@
         try {
             const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
             osc.connect(gain); gain.connect(audioCtx.destination);
-            if (type === 'text') { 
-                osc.type = 'square'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); 
-                gain.gain.setValueAtTime(0.01, audioCtx.currentTime); 
-                osc.start(); osc.stop(audioCtx.currentTime + 0.02); 
-            } else if (type === 'select') { 
-                osc.type = 'square'; osc.frequency.setValueAtTime(1200, audioCtx.currentTime); 
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime); 
-                osc.start(); osc.stop(audioCtx.currentTime + 0.05); 
-            } else if (type === 'cancel') { 
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); 
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime); 
-                osc.start(); osc.stop(audioCtx.currentTime + 0.05); 
-            }
-        } catch (e) { }
+            if (type === 'text') { osc.type = 'square'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); gain.gain.setValueAtTime(0.01, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.02); } 
+            else if (type === 'select') { osc.type = 'square'; osc.frequency.setValueAtTime(1200, audioCtx.currentTime); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.05); } 
+            else if (type === 'cancel') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.05); }
+        } catch (e) {}
     }
-    
     function playGameOverSound() {
         if (!audioCtx) return;
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -214,7 +165,6 @@
             osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 2.5); osc2.stop(audioCtx.currentTime + 2.5);
         } catch(e) {}
     }
-
     function playTitleSound() {
         if (!audioCtx) return;
         try {
@@ -239,27 +189,55 @@
 
     // --- ゲームデータ ---
     const images = {
+        '校門': 'https://via.placeholder.com/320x240/000000/ffffff?text=Main+Gate',
         '食堂': 'shokudo.png',
         '喫煙所': 'kitsuenjo.png',
         'チャペル': 'chapel.png',
         'ニュース': 'news_gameover.png',
         'ラーメン屋': 'yukichan_counter.png'
     };
-    const locationPeople = { '食堂': ['井口', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
+    
+    // 校門を追加
+    const locationPeople = { '校門': [], '食堂': ['井口', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
     const allFriends = ["井口", "加藤", "近藤", "櫛田", "高井", "秋葉", "蟹江"];
     
     const testimonies = {
         "井口": "井口「えっ！？ 英太郎が死んだ！？\nそ、そんな…… 俺はなにも知らないぞ！！」",
-        "加藤": "加藤「現場の状況はまるで『ソウ』だな。\nだがな 英太郎は マクレーンみたいな奴だ。絶対 生き残るさ」", 
-        "近藤": "近藤「嘘だろ？ 英太郎が？\nあいつ、俺にノート貸してやったお礼に、\nとびきりスパイシーなメシを 奢る約束だったのに……」",
-        "櫛田": "櫛田「チッ、あのバカ。 勝手に死ぬとか マジで許さねえぞ。\n最高のオモチャを 奪ったヤツを 早く見つけろ」",
-        "高井": "高井「そういや あいつ 最近『ニンニクの匂いが取れない』って悩んでたな。\n事件と関係あるのか？」",
-        "秋葉": "秋葉「オラが名古屋に 出てきた時、\n英太郎が『真っ赤な看板』の 小せぇ店で 飯奢ってくれたんだ」",
-        "蟹江": "蟹江「見つかっちまったか……。\n証拠の【テキーラの空瓶】は 隠した。\n欲しければ、俺のナゾを解け」"
+        "加藤": "加藤「現場の状況はまるで映画『ソウ』だな。\nだが英太郎はマクレーンみたいな奴だ。絶対 生き残るさ」", 
+        "近藤": "近藤「嘘だろ？ 英太郎が？\n高校野球部上がりの俺より体力あったのになぁ。\nあいつ、とびきりスパイシーなメシを 奢る約束だったのに……」",
+        "櫛田": "櫛田「チッ、あのバカ。 勝手に死ぬとか マジで許さねえぞ。\n俺の愛あるイジりが無いと寂しいくせによ……」",
+        "高井": "高井「たまごっちの世話で忙しいのに……。\nそういや あいつ 最近『ニンニクの匂いが取れない』って悩んでたな」",
+        "秋葉": "秋葉「オデが名古屋に 出てきた時、\n英太郎が『真っ赤な看板』の 小せぇ店で 飯奢ってくれたんだ」",
+        "蟹江": "蟹江「見つかっちまったか……。\n証拠の【テキーラの空瓶】は 隠した。\n校門・食堂・喫煙所・チャペルに隠した4文字のパスを当ててみろ」"
     };
 
-    let gameState = { currentLocation: '食堂', kanieFound: false, foundMemo: false, puzzleCleared: false, actionCount: 0, isGameOver: false };
+    let gameState = { 
+        currentLocation: '校門', 
+        kanieFound: false, 
+        clues: { koumon: false, shokudo: false, kitsuenjo: false, chapel: false }, 
+        puzzleCleared: false, 
+        isGameOver: false 
+    };
     let typingInterval; let isTyping = false;
+
+    // パスコードチェック
+    function showPasscodeScreen() {
+        document.getElementById('start-overlay').style.display = 'none';
+        document.getElementById('passcode-overlay').style.display = 'flex';
+        initAudio();
+    }
+
+    function checkPasscode() {
+        const code = document.getElementById('pass-input').value;
+        if (code === '0921') {
+            playBeep('select');
+            document.getElementById('passcode-overlay').style.display = 'none';
+            startGame();
+        } else {
+            playBeep('cancel');
+            document.getElementById('pass-error').style.display = 'block';
+        }
+    }
 
     // === テキスト表示 ===
     function printText(text, callback = null) {
@@ -300,7 +278,6 @@
         subCmdArea.style.display = 'grid'; 
         subCmdArea.style.gridTemplateColumns = is1Column ? "1fr" : "1fr 1fr"; 
         subCmdArea.innerHTML = ""; 
-        
         buttonsData.forEach(data => { 
             const btn = document.createElement("button"); 
             btn.className = `cmd-btn ${data.isDanger ? 'danger-btn' : ''}`; 
@@ -308,7 +285,6 @@
             btn.onclick = () => { playBeep('select'); showMainMenu(); data.action(); }; 
             subCmdArea.appendChild(btn); 
         }); 
-        
         const backBtn = document.createElement("button"); 
         backBtn.className = "cmd-btn btn-back"; backBtn.innerText = "戻る"; 
         backBtn.onclick = () => { playBeep('cancel'); showMainMenu(); }; 
@@ -316,23 +292,18 @@
         subCmdArea.scrollTop = 0; 
     }
     
-    function showLocations() { buildSubMenu(["食堂", "喫煙所", "チャペル"].filter(loc => loc !== gameState.currentLocation).map(loc => ({ label: loc, action: () => executeCommand('場所移動', loc) }))); }
+    function showLocations() { buildSubMenu(["校門", "食堂", "喫煙所", "チャペル"].filter(loc => loc !== gameState.currentLocation).map(loc => ({ label: loc, action: () => executeCommand('場所移動', loc) }))); }
     function showPeople() { const peopleHere = locationPeople[gameState.currentLocation]; if (peopleHere.length === 0) { printText("ここには誰もいないようだ。"); return; } buildSubMenu(peopleHere.map(person => ({ label: person, action: () => executeCommand('聞く', person) })), true); }
     function showCulprits() { buildSubMenu(allFriends.map(person => ({ label: person, isDanger: true, action: () => executeCommand('犯人', person) })), true); }
 
-    // ★ バッドエンドから復帰する関数 ★
     function restoreFromBadEnd() {
         playBeep('cancel');
         gameState.isGameOver = false;
-        
-        clearInterval(typingInterval);
-        isTyping = false;
+        clearInterval(typingInterval); isTyping = false;
         
         sceneImage.src = images[gameState.currentLocation];
         locationTitle.innerText = `名学大 ${gameState.currentLocation}`;
         locationTitle.classList.remove("game-over-title");
-        
-        // ★修正ポイント: 正しいIDを使用するようにしました！★
         document.getElementById('image-window').classList.remove("game-over-border");
         document.getElementById('text-window').classList.remove("game-over-border");
         document.getElementById('command-window').classList.remove("game-over-border");
@@ -345,100 +316,111 @@
     function executeCommand(action, target) {
         if (isTyping || gameState.isGameOver) return;
         let response = "";
-        gameState.actionCount++; 
         
         if (action === '場所移動') { 
             gameState.currentLocation = target; sceneImage.src = images[target]; locationTitle.innerText = `名学大 ${target}`; 
             response = `＞ 【${target}】へ移動した。\nどうする？`; showMainMenu(); 
         } 
         else if (action === '聞く') { 
-            if (target === '加藤' && gameState.foundMemo && !gameState.puzzleCleared && gameState.actionCount > 5) { 
-                response = `加藤「ん？ お前が見つけたそのメモ……。\n『シカク、サンカク、マル』って、もしかして【漢字の画数】のことじゃないか？\n四角は4画、丸は……0画か？」`; 
-            } else { 
-                response = `＞ ${target} の証言を聞いた。\n\n${testimonies[target]}`; 
-            } 
+            response = `＞ ${target} の証言を聞いた。\n\n${testimonies[target]}`; 
         } 
         else if (action === '調べる') { 
-            if (gameState.currentLocation === '食堂') { 
-                response = "＞ 食堂のテーブルを調べた。\n\n赤い液体で『英太郎が殺された・・・』と書かれている。\n血にしてはスパイシーすぎる気が……。"; 
-            } else if (gameState.currentLocation === '喫煙所' && !gameState.foundMemo) { 
-                response = "＞ 灰皿の裏を調べた。\n\n暗号のメモを発見した！\n『 シ・カ・ク 』『 サ・ン・カ・ク 』『 マ・ル 』"; gameState.foundMemo = true; 
+            if (gameState.currentLocation === '校門') { 
+                response = "＞ 校門の看板の裏を調べた。\n\n暗号の文字【 か 】を発見した！"; gameState.clues.koumon = true;
+            } else if (gameState.currentLocation === '食堂') { 
+                response = "＞ 食堂のテーブルを調べた。\n\nスパイシーな赤い液体で『英太郎が殺された』とあり、\nその横に暗号の文字【 わ 】が書かれている！"; gameState.clues.shokudo = true;
+            } else if (gameState.currentLocation === '喫煙所') { 
+                response = "＞ 灰皿の裏を調べた。\n\n暗号の文字【 か 】を発見した！"; gameState.clues.kitsuenjo = true; 
             } else if (gameState.currentLocation === 'チャペル') { 
                 if (!gameState.kanieFound) { 
                     response = "＞ チャペルの祭壇の裏を調べた。\n隠れていた【蟹江】を発見した！\n（「人を呼ぶ」で話を聞ける！）"; gameState.kanieFound = true; locationPeople['チャペル'].push('蟹江'); showMainMenu(); 
-                } else if (!gameState.puzzleCleared) { 
-                    response = "蟹江「どうしても分からないのか？\n漢字の画数に変換してみろ」"; 
                 } else { 
-                    response = "＞ チャペルの辺りを調べた。\n特に変わったものはない。"; 
+                    response = "＞ チャペルの長椅子を調べた。\n\n暗号の文字【 み 】を発見した！"; gameState.clues.chapel = true;
                 } 
-            } else { 
-                response = `＞ ${gameState.currentLocation} の辺りを調べた。\nなにもないようだ。`; 
-            } 
+            }
         } 
         else if (action === '謎を解く') { 
             setTimeout(() => { 
-                let code = prompt("蟹江「3桁の数字を入力してみろ」"); 
-                if (code === "430") { 
-                    playBeep('select'); printText("蟹江「正解だ。画数に気づくとはな。\n約束通り【テキーラの空瓶】を渡そう」"); gameState.puzzleCleared = true; showMainMenu(); 
+                let code = prompt("蟹江「校門、食堂、喫煙所、チャペルに隠された\n4文字の ひらがな を入力しろ」"); 
+                if (code === "かわかみ") { 
+                    playBeep('select'); printText("蟹江「正解だ。よく見つけたな。\n約束通り【テキーラの空瓶】を渡そう」"); gameState.puzzleCleared = true; showMainMenu(); 
                 } else if (code !== null) { 
-                    printText("蟹江「フッ、全然違うな」"); 
+                    printText("蟹江「フッ、全然違うな。ひらがな4文字だぞ」"); 
                 } 
             }, 100); return; 
         } 
         else if (action === '犯人') { 
             if (target !== '井口') { 
-                // --- バッドエンド処理 ---
                 gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none'; 
                 sceneImage.src = images['ニュース']; locationTitle.innerText = "臨時ニュース"; locationTitle.classList.add("game-over-title"); 
-                
-                // ★修正ポイント: 正しいIDを使用するようにしました！★
-                document.getElementById('image-window').classList.add("game-over-border"); 
-                document.getElementById('text-window').classList.add("game-over-border"); 
-                document.getElementById('command-window').classList.add("game-over-border"); 
-                
+                document.getElementById('image-window').classList.add("game-over-border"); document.getElementById('text-window').classList.add("game-over-border"); document.getElementById('command-window').classList.add("game-over-border"); 
                 playGameOverSound(); 
                 
-                response = `探偵「犯人はお前だ！ ${target}！」\n\n（臨時ニュース速報）\nアナウンサー『英太郎さんは、スズメバチに刺され ショック死しました』\n\n探偵「な、なんだってー！？ 事件じゃなかったのか…」\n\n【 BAD END - 推理失敗 】`; 
+                // バッドエンド死因分岐
+                let deathReason = "";
+                if (target === '加藤' || target === '秋葉') deathReason = "スズメバチに刺され ショック死";
+                else if (target === '近藤' || target === '櫛田') deathReason = "ミネラルウォーターの飲み過ぎで 水中毒死";
+                else if (target === '高井' || target === '蟹江') deathReason = "なめこの食べ過ぎで 中毒死";
+
+                response = `探偵「犯人はお前だ！ ${target}！」\n${target}「証拠あんのかよ！」\n\n（臨時ニュース）\nアナウンサー『英太郎さんは、${deathReason}しました』\n\n探偵「な、なんだってー！？ 事件じゃなかったのか…」\n\n【 BAD END - 推理失敗 】`; 
                 
                 printText(response, () => {
-                    subCmdArea.style.display = 'grid';
-                    subCmdArea.style.gridTemplateColumns = '1fr';
+                    subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr';
                     subCmdArea.innerHTML = '<button class="cmd-btn" onclick="restoreFromBadEnd()">▶ 犯人指名まで戻る</button>';
                 });
                 return;
             } else { 
-                // --- 正解（井口）処理 ---
+                // 正解（井口）処理
                 if (!gameState.puzzleCleared) { 
                     response = "探偵「井口！ お前が犯人だ！」\n井口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない。"; 
                 } else { 
-                    response = "探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n＞ 井口は逃亡した！\n置き手紙には『あいつに飲ませすぎた。すまない』とあった。\n近藤「メシ食おうぜ！」\n＞ 探偵たちは大学を出ることにした……。"; 
-                    
+                    response = "探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n＞ 井口は逃亡した！\n置き手紙には『あいつに飲ませすぎた。すまない』とあった。\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 探偵たちは大学を出ることにした……。"; 
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
-                    
                     printText(response, () => {
-                        subCmdArea.style.display = 'grid';
-                        subCmdArea.style.gridTemplateColumns = '1fr';
-                        subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="executeCommand(\'ラーメン屋\', \'行く\')">▶ ゆきちゃんラーメンへ</button>';
+                        subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr';
+                        subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ ラーメン屋へ行く</button>';
                     });
                     return;
                 } 
             } 
         } 
-        else if (action === 'ラーメン屋') {
-            sceneImage.src = images['ラーメン屋'];
-            locationTitle.innerText = "ゆきちゃんラーメン";
-            subCmdArea.style.display = 'none';
-            response = "＞ 【ゆきちゃんラーメン】へやってきた。\nそこには 鎖に繋がれ、白目を剥きながら無限に台湾ラーメンを作り続ける 英太郎の姿が！\n店長『体で 払ってもらってんだわ』\n探偵「……あの汁、台湾ラーメンだったのか……」";
-            
-            printText(response, () => {
-                subCmdArea.style.display = 'grid';
-                subCmdArea.style.gridTemplateColumns = '1fr';
-                subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="startEndingRoll()">▶ エンディングを見る</button>';
-            });
-            return; 
-        }
         printText(response);
     }
+
+    // ★ 感動のエンディングカットシーン ★
+    let endingPhase = 0;
+    const endingTexts = [
+        "＞ 探偵と残されたメンバーたちは、名古屋名物の台湾ラーメンを食べに ある店にやってきた。",
+        "高井「そういえば英太郎って、この『ゆきちゃんラーメン』でバイトしてたよな。最近 姿を見ないけど…」",
+        "＞ ……！！\n厨房の奥を見ると、鎖に繋がれ、白目を剥きながら無限に台湾ラーメンを作り続ける英太郎の姿があった！",
+        "店長『こいつ、ウチの秘伝のスープこぼしやがったから、体で払ってもらってんだわ』\n\n探偵「……食堂の赤い文字は、台湾ラーメンの汁か……」",
+        "＞ 探偵はたまらず厨房に飛び込み、英太郎を救出した！\n\n探偵「親父！ 大丈夫か！」\n英太郎「お、親父…？ 君は誰だ…？」",
+        "＞ 探偵は正体を明かした。\n彼の名は『楓晴（ふうせい）』。未来から来た英太郎の息子だったのだ。\n\n昔からこんな風に、他人のために苦労してばかりだったのか……。",
+        "＞ 楓晴は、汗とラー油にまみれた若き日の父の背中を見て、強く誓った。\n\n『未来に帰ったら、もっと頑張って 親父を楽させてやろう』と――。"
+    ];
+
+    window.playEndingCutscene = function() {
+        playBeep('select');
+        subCmdArea.style.display = 'none';
+        
+        if (endingPhase === 0) {
+            sceneImage.src = images['ラーメン屋'];
+            locationTitle.innerText = "某ラーメン店";
+        } else if (endingPhase === 1) {
+            locationTitle.innerText = "ゆきちゃんラーメン";
+        }
+
+        if (endingPhase < endingTexts.length) {
+            printText(endingTexts[endingPhase], () => {
+                subCmdArea.style.display = 'grid';
+                subCmdArea.style.gridTemplateColumns = '1fr';
+                subCmdArea.innerHTML = `<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ 次へ</button>`;
+                endingPhase++;
+            });
+        } else {
+            startEndingRoll();
+        }
+    };
 
     function startEndingRoll() {
         playBeep('select');
@@ -450,22 +432,17 @@
         setTimeout(() => {
             document.getElementById('end-roll-overlay').style.display = 'none';
             document.getElementById('feather-pen-overlay').style.display = 'flex';
-            
-            setTimeout(() => {
-                document.getElementById('restart-btn-feather').style.display = 'block';
-            }, 7000);
+            setTimeout(() => { document.getElementById('restart-btn-feather').style.display = 'block'; }, 7000);
         }, 160000); 
     }
 
     function startGame() { 
-        document.getElementById('start-overlay').style.display = 'none'; 
-        initAudio(); 
         const titleOverlay = document.getElementById('title-overlay'); 
         titleOverlay.style.display = 'flex'; 
         playTitleSound(); 
         setTimeout(() => { 
             titleOverlay.style.display = 'none'; 
-            printText("あなたは名学大の食堂にやってきた。\nテーブルの上に 赤い文字で『英太郎が殺された・・・』と\n書かれているのを 発見した！\n彼の7人の友人に 話を聞いてみよう。"); 
+            printText("時は1997年、愛知県瀬戸市。\n俺は『楓晴（ふうせい）』。未来からやってきた私立探偵だ。\n\nいつも他人のために動いてばかりいる父・英太郎の様子を見に来たら、\n彼の母校である 名学大 で事件が起きたらしい。\n\nそれにしても、1997年の世界は驚くことばかりだ。\nすれ違う男子学生はみんなロン毛だし、\n携帯電話はアンテナが伸びるトランシーバーみたいにデカい。\n\n俺は正体を隠しながら、父の親友7人に 話を聞くことにした。"); 
         }, 3500); 
     }
 </script>
