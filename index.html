@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>極秘ファイル</title>
+
+    <meta property="og:title" content="極秘ファイル">
+    <meta property="og:description" content=""> <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Kaisei+Decol:wght@700&display=swap" rel="stylesheet">
     <style>
         /* --- エンディング・演出用CSS --- */
@@ -468,7 +471,7 @@
         playBeep('cancel'); gameState.isGameOver = false; sceneImage.src = images[gameState.currentLocation];
         locationTitle.innerText = `名学大 ${gameState.currentLocation}`; locationTitle.classList.remove("game-over-title");
         document.querySelectorAll('.fami-window').forEach(el => el.classList.remove("game-over-border"));
-        textArea.innerHTML = "気を取り直して、もう一度推理しよう…….\n誰が真犯人なんだ…？"; showCulprits(); 
+        textArea.innerHTML = "気を取り直して、もう一度推理しよう…….\n誰が真犯人んだ…？"; showCulprits(); 
     }
     
     function executeCommand(action, target) {
@@ -485,7 +488,6 @@
             gameState.talkCount[target]++;
             let savedMsg = localStorage.getItem('blessing_' + target);
             if (gameState.talkCount[target] >= 3 && savedMsg) {
-                // メッセージが仕込まれていて、条件を満たした場合発動！
                 playShockSound();
                 printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
             } else {
@@ -548,7 +550,7 @@
         "＞ ……！！\n厨房の奥を見ると……", 
         "＞ 鎖に繋がれ、白目を剥きながら無限に謎の辛い麺を作り続ける英太郎の姿があった！", 
         "店長『こいつ、ウチの秘伝のスープこぼしやがったから、体で払ってもらってんだわ』\n\n探偵「……食堂の赤い文字は、この激辛ラーメンの汁か……」",
-        "＞ 探偵はたまらず厨房に飛び込み、英太郎を救出した！\n\n探偵「……親父！ 大丈夫か！」\n英太郎「お、親父…？ 君は誰だ…？」",
+        "＞ 探偵はたまらず厨房に飛び込み、英太郎を救出した！\n\n探偵「……親父！ 大丈夫か！」\n英太郎「お, 親父…？ 君は誰だ…？」",
         "＞ 探偵――いや、『楓晴（ふうせい）』は 静かに微笑んだ。\n実は 彼こそが、未来から 様子を見に来た 英太郎の『息子』だったのだ。\n\n（昔からこんな風に、他人のために苦労してばかりだったのか……）", 
         "＞ 楓晴は、汗とラー油にまみれた若き日の父の背中を見て、強く誓った。\n\n『未来に帰ったら、もっと頑張って 親父を楽させてやろう』と――。"
     ];
