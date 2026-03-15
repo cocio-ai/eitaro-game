@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>英太郎殺人事件 - 名学と友情の挽歌</title>
+    <title>極秘ファイル</title>
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Kaisei+Decol:wght@700&display=swap" rel="stylesheet">
     <style>
         /* --- エンディング・演出用CSS --- */
         #end-roll-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 400; display: none; overflow: hidden; text-align: center; border: 6px double #fff; box-sizing: border-box; }
         #end-roll-credits { position: absolute; width: 100%; top: 100%; animation: scrollCredits 166s linear forwards; padding-bottom: 100vh; }
-        
-        /* ★ スクロール距離を調整し、曲の最後まで流れるように ★ */
         @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -1400%; } }
         
         #ed-cutin-image-window { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 320px; height: auto; aspect-ratio: 4 / 3; border: 4px double #fff; z-index: 410; background: #000; padding: 2px; }
@@ -92,8 +90,8 @@
 
 <div id="game-wrapper">
     <div id="start-overlay" onclick="showPasscodeScreen()">
-        <span class="blink">▶ 画面をタップして スタート</span>
-        <span class="audio-notice">※音声オンでお楽しみください</span>
+        <span class="blink">▶ 極秘ファイルを閲覧する</span>
+        <span style="font-size: 14px; margin-top: 10px;">※音声オンに必ずして下さい</span>
     </div>
 
     <div id="passcode-overlay">
@@ -222,6 +220,34 @@
                 <div class="cr-history" style="color: #aaa;">そのすべてが、あなたの渇きを癒やします。</div>
             </div>
 
+            <div style="margin-top: 250px;"></div>
+            
+            <div class="cr-role" style="font-size: 24px; color: #00ffff; text-shadow: 1px 1px 0 #0055ff;">【 特別協賛・井口のその後 】</div>
+            <div class="cr-name" style="font-size: 30px; margin-top: 30px; letter-spacing: 2px;">株式会社ピーナッツ・フューチャー</div>
+            <div class="cr-role" style="margin-top: 10px; font-size: 18px;">代表取締役</div>
+            <div class="cr-name" style="font-size: 26px; margin-top: 10px; letter-spacing: 1px;">井口 （元・大学生）</div>
+            
+            <div style="margin-top: 40px;"></div>
+            <div class="cr-history-box" style="border-color: #00ffff; background: rgba(0, 255, 255, 0.05); text-align: center;">
+                <div class="cr-history" style="color: #00ffff; font-size: 18px; margin-bottom: 20px;">〜 落花生から未来を創る 〜</div>
+                <div class="cr-history">逃亡、そして漂流。</div>
+                <div class="cr-history">あの夏、名古屋を追われた井口が辿り着いたのは、</div>
+                <div class="cr-history">太平洋の潮風吹く、千葉の地でした。</div>
+                <div style="margin-top: 20px;"></div>
+                <div class="cr-history">そこで出会った落花生の、</div>
+                <div class="cr-history">土に根を張る生命力に一念発起。</div>
+                <div class="cr-history">持ち前のフットワーク（と滝のような汗）で</div>
+                <div class="cr-history">次世代落花生エネルギー事業を開拓し、</div>
+                <div class="cr-history">見事、千葉のビジネス王へと上り詰めました。</div>
+                <div style="margin-top: 30px;"></div>
+                <div class="cr-history" style="color: #aaa;">「いつか英太郎と、冷たい水で乾杯したい」</div>
+                <div class="cr-history" style="color: #aaa;">今日も彼は、愛するピーナッツ畑を見つめて</div>
+                <div class="cr-history" style="color: #aaa;">そう呟きます。</div>
+                <div style="margin-top: 20px;"></div>
+                <div class="cr-history" style="color: #aaa;">——英太郎ファミリーは、いつかこの千葉の地を</div>
+                <div class="cr-history" style="color: #aaa;">目指すことになるのかもしれません。</div>
+            </div>
+
             <div style="margin-top: 300px;"></div>
             
             <div class="cr-role">ＥＤテーマ</div>
@@ -244,6 +270,7 @@
                 これで終わりではありません。ぜひゲームに加わってください！<br>
                 ゲーム内の登場人物たちに、英太郎への「祝福のメッセージ」を仕込むことができます。
             </div>
+            <div style="margin-bottom: 5px; color:#ffeb3b;">自分の名前を選んでください</div>
             <select id="bless-char">
                 <option value="井口">井口</option>
                 <option value="加藤">加藤</option>
@@ -268,7 +295,7 @@
         <div id="command-window" class="fami-window">
             <div id="main-commands">
                 <button class="cmd-btn" onclick="showLocations()">場所移動</button>
-                <button class="cmd-btn" onclick="showPeople()">人を呼ぶ</button>
+                <button class="cmd-btn" id="cmd-talk" onclick="showTalkSubMenu()">話を聞く</button>
                 <button class="cmd-btn" onclick="showInvestigateSpots()">辺りを調べる</button>
                 <button class="cmd-btn special-btn" onclick="executeCommand('謎を解く', '蟹江')" id="cmd-puzzle" style="display:none;">謎を解く</button>
                 <button class="cmd-btn danger-btn" onclick="showCulprits()">犯人を指名する</button>
@@ -295,16 +322,32 @@
             else if (type === 'cancel') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); osc.start(); osc.stop(audioCtx.currentTime + 0.05); }
         } catch (e) {}
     }
+    // ★ 事件発生時の効果音をもっと悲劇的に ★
     function playShockSound() {
         if (!audioCtx) return;
         try {
             const osc1 = audioCtx.createOscillator(); const osc2 = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
             osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination); 
             osc1.type = 'sawtooth'; osc2.type = 'square'; 
-            osc1.frequency.setValueAtTime(800, audioCtx.currentTime); osc1.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.5); 
-            osc2.frequency.setValueAtTime(850, audioCtx.currentTime); osc2.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.5); 
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5); 
-            osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 0.5); osc2.stop(audioCtx.currentTime + 0.5);
+            // 不協和音、低音からさらに低く
+            osc1.frequency.setValueAtTime(110, audioCtx.currentTime); osc1.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 1.5); 
+            osc2.frequency.setValueAtTime(115, audioCtx.currentTime); osc2.frequency.exponentialRampToValueAtTime(55, audioCtx.currentTime + 1.5); 
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5); 
+            osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 1.5); osc2.stop(audioCtx.currentTime + 1.5);
+        } catch(e) {}
+    }
+    // ★ キーワード発見時の効果音 ★
+    function playClueSound() {
+        if (!audioCtx) return;
+        try {
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.type = 'triangle'; // キラキラした音
+            osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(1600, audioCtx.currentTime + 0.05);
+            osc.frequency.setValueAtTime(2000, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3); 
+            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
         } catch(e) {}
     }
     function playGameOverSound() {
@@ -338,15 +381,10 @@
     const sceneImage = document.getElementById('scene-image');
     const locationTitle = document.getElementById('location-title');
 
-    // ★ GitHubで管理されるすべての画像ファイル名 ★
     const images = {
         '校門': 'koumon.png', '食堂': 'shokudo.png', '喫煙所': 'kitsuenjo.png', 'チャペル': 'chapel.png',
         'ニュース_ハチ': 'news_bee.png', 'ニュース_水': 'news_water.png', 'ニュース_なめこ': 'news_nameko.png',
-        'ラーメン屋': 'yukichan_counter.png', '厨房の英太郎': 'yukichan_ramen.png',
-        // --- ★ エンドロール用の3枚のファイル名を修正 ★ ---
-        'ed_beach_pregnant.png': 'ed_beach_pregnant.png', // 要望通り妊婦のビーチ写真の名前だが、内容はカウンター画像
-        'ED_RevealChains': 'ed_chains.png',
-        'ED_FutureFamily': 'ed_family.png'
+        'ラーメン屋': 'yukichan_counter.png', '厨房の英太郎': 'yukichan_ramen.png'
     };
     
     const locationPeople = { '校門': [], '食堂': ['井口', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
@@ -358,10 +396,10 @@
         "井口": "井口「い、英太郎が死んだ！？ そ、そんな……！\nお、俺は何も知らないぞ！ 昨日の夜、ちょっと飲みすぎただけで……あわわわ！」\n\n＞ 井口は滝のような汗をかき、目が泳ぎまくっている。",
         "加藤": "加藤「現場の状況はまるで映画『セブン』だな。\nだが英太郎はしぶとい男だ。絶対『イピカイエー』って言いながら帰ってくるさ！\nそういやあいつ、最近『X-ファイル』のモルダー捜査官みたいに『真実はそこにある』とかブツブツ言ってたな」", 
         "近藤": "近藤「嘘だろ？ 英太郎が？\nバスケ部だった俺より タフな奴だったのにな……。\n爽やかな笑顔だけが取り柄の俺だけど、今日ばっかりは笑えねぇよ。\nあいつ、俺がノート貸してやったお礼に『とびきりスパイシーなメシ』を奢ってくれる約束だったんだぞ！」",
-        "櫛田": "櫛田「チッ、あのバカ。勝手に死ぬとかマジで許さねえぞ。\n高校野球で鍛えた 俺の千本ノック並みの『愛あるイジり』を、笑顔で受け止めてくれるのは あいつくらいだったのによ……。\nおい探偵、俺の最高のオモチャを奪った犯人を早く見つけろ。バットでカチ割ってやる」",
-        "高井": "高井「えっ、マジで？\n俺いま たまごっちのウンチの世話と、PHSの着メロ作りで超忙しいんだけど……。\nあ、そういや あいつ最近『ニンニクの匂いが取れない』ってシャンプー3回もしてたな。\n事件と関係ある？ ドラキュラにでも血ぃ吸われたの？」",
+        "櫛田": "櫛田「チッ、あのバカ。勝手に死ぬとかマジで許さねえぞ。\n高校野球で鍛えた 俺の千本ノック並みの『愛あるイジり』を、笑顔で受け止めてくれるのは あいつくらいだったのによ…….\nおい探偵、俺の最高のオモチャを奪った犯人を早く見つけろ。バットでカチ割ってやる」",
+        "高井": "高井「えっ、マジで？\n俺いま たまごっちのウンチの世話と、PHSの着メロ作りで超忙しいんだけど…….\nあ、そういや あいつ最近『ニンニクの匂いが取れない』ってシャンプー3回もしてたな.\n事件と関係ある？ ドラキュラにでも血ぃ吸われたの？」",
         "秋葉": "秋葉「オ、オデ信じらんねぇ！\nオデが名古屋に出てきて右も左も分かんねぇ時、英太郎が夜中に光る怪しい提灯の店で 飯奢ってくれたんだ！\n汗ダラダラ流しながら食う、スゲェ辛いメシ……\nオデ、まだお礼も言えてねぇのに！うわあああん！」",
-        "蟹江": "蟹江「ククク……見つかっちまったか。\n俺がこの大学の裏ボス、蟹江だ。\n英太郎の事件か……決定的な証拠【テキーラの空瓶】は俺が隠した。\n欲しければ、校門・食堂・喫煙所・チャペルに隠された『4文字のひらがな』を導き出してみろ」"
+        "蟹江": "蟹江「ククク……見つかっちまったか。\n俺がこの大学の裏ボス、蟹江だ。\n英太郎の事件か……決定的な証拠【テキーラの空瓶】は俺が隠した.\n欲しければ、校門・食堂・喫煙所・チャペルに隠された『4文字のひらがな』を導き出してみろ」"
     };
 
     let gameState = { 
@@ -369,26 +407,27 @@
         clues: { koumon: false, shokudo: false, kitsuenjo: false, chapel: false }, 
         puzzleCleared: false, isGameOver: false,
         firstTimeCafeteria: true, firstTimeSmoking: true, firstTimeChapel: true,
-         talkCount: { "井口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 }
+        talkCount: { "井口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 }
     };
     let typingInterval; let isTyping = false;
 
+    // --- メタ的メッセージセーブ機能 ---
     function saveBlessingAndRestart() {
         const char = document.getElementById('bless-char').value;
         const msg = document.getElementById('bless-msg').value;
         if(msg.trim() !== "") {
             localStorage.setItem('blessing_' + char, msg);
+            // 3回という言葉は使わず、ヒントを出す
             alert(`${char} にメッセージを仕込みました！\n\n【ヒント】\n再スタート後、ゲーム内でみんなの話を「よく聞いて」みましょう……。`);
         }
         location.reload(); 
     }
 
     function showPasscodeScreen() {
-        initAudio();
         document.getElementById('start-overlay').style.display = 'none';
         document.getElementById('passcode-overlay').style.display = 'flex';
+        initAudio();
     }
-    
     function checkPasscode() {
         if (document.getElementById('pass-input').value === '0921') {
             playBeep('select'); document.getElementById('passcode-overlay').style.display = 'none'; startGame();
@@ -420,59 +459,63 @@
         backBtn.onclick = () => { playBeep('cancel'); showMainMenu(); }; subCmdArea.appendChild(backBtn); subCmdArea.scrollTop = 0; 
     }
     function showLocations() { buildSubMenu(["校門", "食堂", "喫煙所", "チャペル"].filter(loc => loc !== gameState.currentLocation).map(loc => ({ label: loc, action: () => executeCommand('場所移動', loc) }))); }
-    function showPeople() { const p = locationPeople[gameState.currentLocation]; if (p.length === 0) { printText("ここには誰もいないようだ。"); return; } buildSubMenu(p.map(person => ({ label: person, action: () => executeCommand('聞く', person) })), true); }
+    // ★ showPeopleをshowTalkSubMenuに変更、1列表示、戻るボタン追加 ★
+    function showTalkSubMenu() { const p = locationPeople[gameState.currentLocation]; if (p.length === 0) { printText("ここには誰もいないようだ."); return; } buildSubMenu(p.map(person => ({ label: person, action: () => executeCommand('聞く', person) })), true); }
     function showCulprits() { buildSubMenu(allFriends.map(person => ({ label: person, isDanger: true, action: () => executeCommand('犯人', person) })), true); }
     function showInvestigateSpots() { buildSubMenu(investigateSpots[gameState.currentLocation].map(spot => ({ label: spot, action: () => executeCommand('調べる', spot) }))); }
+    // ★ バッドエンドから犯人選択前の場面に戻る ★
     function restoreFromBadEnd() {
         playBeep('cancel'); gameState.isGameOver = false; sceneImage.src = images[gameState.currentLocation];
         locationTitle.innerText = `名学大 ${gameState.currentLocation}`; locationTitle.classList.remove("game-over-title");
         document.querySelectorAll('.fami-window').forEach(el => el.classList.remove("game-over-border"));
-        textArea.innerHTML = "気を取り直して、もう一度推理しよう……。\n誰が真犯人なんだ…？"; showCulprits(); 
+        textArea.innerHTML = "気を取り直して、もう一度推理しよう…….\n誰が真犯人なんだ…？"; showCulprits(); 
     }
     
     function executeCommand(action, target) {
         if (isTyping || gameState.isGameOver) return;
         if (action === '場所移動') { 
             gameState.currentLocation = target; sceneImage.src = images[target]; locationTitle.innerText = `名学大 瀬戸CP ${target}`; 
-            let r = `＞ 【${target}】へ移動した。\nどうする？`;
-            if (target === '食堂' && gameState.firstTimeCafeteria) { gameState.firstTimeCafeteria = false; playShockSound(); r = "＞ 【食堂】へ移動した。\n\n探偵「な、なんだこれは！？ テーブルに赤い液体で『英太郎が殺された・・・』と書かれている！」\n\n探偵「おい、そこのお前たち！ 詳しい話を聞かせろ！」"; }
-            else if (target === '喫煙所' && gameState.firstTimeSmoking) { gameState.firstTimeSmoking = false; r = "＞ 【喫煙所】へ移動した。\n\n探偵「ここにも友達らしき奴らがたむろしている。話を聞いてみるか」"; }
-            else if (target === 'チャペル' && gameState.firstTimeChapel) { gameState.firstTimeChapel = false; r = "＞ 【チャペル】へ移動した。\n\n探偵「誰もいないが、誰かの気配がする……。辺りを調べてみよう」"; }
+            let r = `＞ 【${target}】へ移動した.\nどうする？`;
+            if (target === '食堂' && gameState.firstTimeCafeteria) { gameState.firstTimeCafeteria = false; playShockSound(); r = "＞ 【食堂】へ移動した.\n\n探偵「な、なんだこれは！？ テーブルに赤い液体で『英太郎が殺された・・・』と書かれている！」\n\n探偵「おい、そこのお前たち！ 詳しい話を聞かせろ！」"; }
+            else if (target === '喫煙所' && gameState.firstTimeSmoking) { gameState.firstTimeSmoking = false; r = "＞ 【喫煙所】へ移動した.\n\n探偵「ここにも友達らしき奴らがたむろしている. 話を聞いてみるか」"; }
+            else if (target === 'チャペル' && gameState.firstTimeChapel) { gameState.firstTimeChapel = false; r = "＞ 【チャペル】へ移動した.\n\n探偵「誰もいないが、誰かの気配がする……. 辺りを調べてみよう」"; }
             printText(r); showMainMenu(); 
         } 
         else if (action === '聞く') {
             gameState.talkCount[target]++;
             let savedMsg = localStorage.getItem('blessing_' + target);
             if (gameState.talkCount[target] >= 3 && savedMsg) {
+                // メッセージが仕込まれていて、条件を満たした場合発動！
                 playShockSound();
-                printText(`＞ ${target} の様子がおかしい……。\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突故としてメタ的なメッセージを放った！`);
+                printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
             } else {
-                printText(`＞ ${target} の証言を聞いた。\n\n${testimonies[target]}`); 
+                printText(`＞ ${target} の証言を聞いた.\n\n${testimonies[target]}`); 
             }
         } 
         else if (action === '調べる') { 
-            let r = "何も見つからなかった。";
+            let r = "何も見つからなかった.";
             if (gameState.currentLocation === '校門') {
-                if (target === '看板') r = "＞ 校門の看板だ。\n『名古屋学院大学 瀬戸キャンパス』とある。";
-                else if (target === '掲示板') { r = "＞ 掲示板を調べた。\n今年大ヒットしている映画『もののけ姫』のポスターが貼ってある。\nよく見ると、アシタカの顔に 落書きで文字が書かれていた！\n\n【 か 】の文字を発見した！"; gameState.clues.koumon = true; }
+                if (target === '看板') r = "＞ 校門の看板だ.\n『名古屋学院大学 瀬戸キャンパス』とある.";
+                // ★ キーワード発見時に効果音 ★
+                else if (target === '掲示板') { playClueSound(); r = "＞ 掲示板を調べた.\n今年大ヒットしている映画『もののけ姫』のポスターが貼ってある.\nよく見ると、アシタカの顔に 落書きで文字が書かれていた！\n\n【 か 】の文字を発見した！"; gameState.clues.koumon = true; }
             } else if (gameState.currentLocation === '食堂') {
-                if (target === 'テーブル') r = "＞ テーブルを調べた。\nスパイシーな赤い液体で『英太郎が殺された』とある。\n強烈なニンニクと唐辛子の匂いがする……。なんの汁だこれ？";
-                else if (target === '落とし物') { r = "＞ 床に落ちていた 細長いCDケースを拾った。\n今年発売されたばかりの KinKi Kids『硝子の少年』の8センチCDだ！\nCDの裏にマジックで文字が書かれている…\n\n【 わ 】の文字を発見した！"; gameState.clues.shokudo = true; }
+                if (target === 'テーブル') r = "＞ テーブルを調べた.\nスパイシーな赤い液体で『英太郎が殺された』とある.\n強烈なニンニクと唐辛子の匂いがする……. なんの汁だこれ？";
+                else if (target === '落とし物') { playClueSound(); r = "＞ 床に落ちていた 細長いCDケースを拾った.\n今年発売されたばかりの KinKi Kids『硝子の少年』の8センチCDだ！\nCDの裏にマジックで文字が書かれている…\n\n【 わ 】の文字を発見した！"; gameState.clues.shokudo = true; }
             } else if (gameState.currentLocation === '喫煙所') {
-                if (target === '灰皿') { r = "＞ 灰皿の横に、誰かの『ポケベル』が落ちている。\n画面には「0840（おはよう）」の数字が残っている。\nその裏に シールで文字が貼られていた！\n\n【 か 】の文字を発見した！"; gameState.clues.kitsuenjo = true; }
-                else if (target === '自販機') r = "＞ 自販機を調べた。\n「今年から消費税5%導入に伴い値上げしました」という悲しい貼り紙がある。";
+                if (target === '灰皿') { playClueSound(); r = "＞ 灰皿の横に、誰かの『ポケベル』が落ちている.\n画面には「0840（おはよう）」の数字が残っている.\nその裏に シールで文字が貼られていた！\n\n【 か 】の文字を発見した！"; gameState.clues.kitsuenjo = true; }
+                else if (target === '自販機') r = "＞ 自販機を調べた.\n「今年から消費税5%導入に伴い値上げしました」という悲しい貼り紙がある.";
             } else if (gameState.currentLocation === 'チャペル') {
-                if (target === '祭壇' && !gameState.kanieFound) { playShockSound(); r = "＞ 祭壇の裏を調べた。\n探偵「うわっ！」\n\nなんと、暗闇に隠れていた【蟹江】を発見した！"; gameState.kanieFound = true; locationPeople['チャペル'].push('蟹江'); showMainMenu(); }
-                else if (target === '祭壇') r = "＞ 祭壇を調べた。\n蟹江がニヤニヤしながら こちらを見ている。";
-                else if (target === '長椅子') { r = "＞ 長椅子の隙間を調べた。\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\nたまごっちの背面に 鋭利なもので文字が彫られている…\n\n【 み 】の文字を発見した！"; gameState.clues.chapel = true; }
+                if (target === '祭壇' && !gameState.kanieFound) { playShockSound(); r = "＞ 祭壇の裏を調べた.\n探偵「うわっ！」\n\nなんと、暗闇に隠れていた【蟹江】を発見した！"; gameState.kanieFound = true; locationPeople['チャペル'].push('蟹江'); showMainMenu(); }
+                else if (target === '祭壇') r = "＞ 祭壇を調べた.\n蟹江がニヤニヤしながら こちらを見ている.";
+                else if (target === '長椅子') { playClueSound(); r = "＞ 長椅子の隙間を調べた.\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\nたまごっちの背面に 鋭利なもので文字が彫られている…\n\n【 み 】の文字を発見した！"; gameState.clues.chapel = true; }
             }
             printText(r);
         } 
         else if (action === '謎を解く') { 
-            if (!(gameState.clues.koumon && gameState.clues.shokudo && gameState.clues.kitsuenjo && gameState.clues.chapel)) { printText("蟹江「まだ文字が足りないようだな。\n校門、食堂、喫煙所、チャペルを くまなく調べてから来な」"); return; }
+            if (!(gameState.clues.koumon && gameState.clues.shokudo && gameState.clues.kitsuenjo && gameState.clues.chapel)) { printText("蟹江「まだ文字が足りないようだな.\n校門、食堂、喫煙所、チャペルを くまなく調べてから来な」"); return; }
             setTimeout(() => {
-                if (prompt("隠された4文字のひらがなを入力しろ") === "かわかみ") { playBeep('select'); printText("蟹江「正解だ。よく見つけたな。\n約束通り 決定的な証拠【テキーラの空瓶】を渡そう」\n\n＞ これで全ての証拠が揃ったはずだ！"); gameState.puzzleCleared = true; showMainMenu(); }
-                else { printText("蟹江「フッ、全然違うな。ひらがな4文字だぞ」"); }
+                if (prompt("隠された4文字のひらがなを入力しろ") === "かわかみ") { playBeep('select'); printText("蟹江「正解だ. よく見つけたな.\n約束通り 決定的な証拠【テキーラの空瓶】を渡そう」\n\n＞ これで全ての証拠が揃ったはずだ！"); gameState.puzzleCleared = true; showMainMenu(); }
+                else { printText("蟹江「フッ、全然違うな. ひらがな4文字だぞ」"); }
             }, 100);
         } 
         else if (action === '犯人') { 
@@ -487,10 +530,11 @@
                     subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = '<button class="cmd-btn" onclick="restoreFromBadEnd()">▶ 犯人指名まで戻る</button>';
                 });
             } else { 
-                if (!gameState.puzzleCleared) { printText("探偵「井口！ お前が犯人だ！」\n井口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない。"); }
+                if (!gameState.puzzleCleared) { printText("探偵「井口！ お前が犯人だ！」\n井口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない."); }
                 else { 
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
-                    printText("探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n\n＞ 井口は猛ダッシュで逃亡した！\n置き手紙には『あいつに飲ませすぎた。すまない』とあった。\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 探偵たちは 井口を追うのを諦め、大学を出ることにした……。", () => {
+                    // ★ 逃亡、誰も心配しない感じ、千葉ストーリーへ ★
+                    printText("探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n\n＞ 井口は猛ダッシュで逃亡した！\n置き手紙には『あいつに飲ませすぎた. すまない』とあった.\n\n探偵たちは大学内をくまなく適当に探したが、\n多分すぐに帰ってくるだろうと誰も心配しなかった.\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 一行は、千葉へ逃げた井口のことなど忘れ、ラーメン屋に向かうことにした…….", () => {
                         subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ ラーメン屋へ行く</button>';
                     });
                 } 
@@ -498,19 +542,15 @@
         } 
     }
 
-    // ★ エンディングストーリーを拡張 ★
     let ep = 0; const et = [
-        "＞ 探偵と残されたメンバーたちは、夜中に光る怪しい提灯の店『ゆきちゃんラーメン』にやってきた。", 
-        "高井「そういえば英太郎って、ここでバイトしてたよな. 最近 姿を見ないけど…」", 
+        "＞ 探偵と残されたメンバーたちは、夜中に光る怪しい提灯の店にやってきた。", 
+        "高井「そういえば英太郎って、この『ゆきちゃんラーメン』でバイトしてたよな. 最近 姿を見ないけど…」", 
         "＞ ……！！\n厨房の奥を見ると……", 
         "＞ 鎖に繋がれ、白目を剥きながら無限に謎の辛い麺を作り続ける英太郎の姿があった！", 
         "店長『こいつ、ウチの秘伝のスープこぼしやがったから、体で払ってもらってんだわ』\n\n探偵「……食堂の赤い文字は、この激辛ラーメンの汁か……」",
         "＞ 探偵はたまらず厨房に飛び込み、英太郎を救出した！\n\n探偵「……親父！ 大丈夫か！」\n英太郎「お、親父…？ 君は誰だ…？」",
         "＞ 探偵――いや、『楓晴（ふうせい）』は 静かに微笑んだ。\n実は 彼こそが、未来から 様子を見に来た 英太郎の『息子』だったのだ。\n\n（昔からこんな風に、他人のために苦労してばかりだったのか……）", 
-        "＞ 楓晴は、汗とラー油にまみれた若き日の父の背中を見て、強く誓った。\n\n『未来に帰ったら、もっと頑張って 親父を楽させてやろう』と――。",
-        "＞ その頃、逃亡した井口は……\n\n（ガタンゴトン、ガタンゴトン……）\n\n井口「……ここなら、探偵も、英太郎も、蟹江も来ない……。千葉、か……」\n\n＞ 井口は遠く離れた千葉の地で、新たな生活（と飲み過ぎ）を始めていた。\n\n＞ だが、英太郎は、楓晴は、いつか必ず井口を見つけ出すだろう。\n＞ それが、友情という名の挽歌だからだ。",
-        "＞ そして、現在——英太郎は、水事業部株式会社ビクトリーで、\n＞ 鎖の代わりにウォーターサーバーを担ぎ、日本全国を飛び回っている。\n＞ いつか、千葉へ届けるガロンボトルの中に、井口へのメッセージを隠して……。",
-        "＞ お祝いのメッセージは、あなたの心の中に。"
+        "＞ 楓晴は、汗とラー油にまみれた若き日の父の背中を見て、強く誓った。\n\n『未来に帰ったら、もっと頑張って 親父を楽させてやろう』と――。"
     ];
     window.playEndingCutscene = function() {
         playBeep('select'); subCmdArea.style.display = 'none';
@@ -522,41 +562,45 @@
         else startEndingRoll();
     };
     
-    // ★ エンドロールのフェードイン/アウト制御 ★
+    // ★ エンドロールの制御関数、フェード演出 ★
     function startEndingRoll() {
         playBeep('select'); subCmdArea.style.display = 'none'; endingMusic.play().catch(e => console.log(e));
         
         const cutInImage = document.getElementById('ed-cutin-image');
         document.getElementById('end-roll-overlay').style.display = 'block';
 
-        // 1枚目：要望通り ed_beach_pregnant.png（0s〜45s）
-        cutInImage.src = images['ed_beach_pregnant.png']; // 1枚目のキーを変更
-        setTimeout(() => cutInImage.classList.add('show-image'), 100); // 即座にフェードイン
+        // --- ★ フェード演出（55秒間隔） ★ ---
+        // 1枚目表示（0s）
+        cutInImage.src = images['ラーメン屋'];
+        setTimeout(() => cutInImage.classList.add('show-image'), 100); 
 
-        // 43.5秒で1枚目のフェードアウト開始
-        setTimeout(() => { cutInImage.classList.remove('show-image'); }, 43500);
+        // 53.5秒で1枚目のフェードアウト開始
+        setTimeout(() => cutInImage.classList.remove('show-image'), 53500);
 
-        // 2枚目：厨房の真実（45s〜90s）
+        // 2枚目表示（55s）、ショック音
         setTimeout(() => {
-            cutInImage.src = images['ED_RevealChains'];
-            cutInImage.classList.add('show-image'); // フェードイン
+            cutInImage.src = images['厨房の英太郎'];
+            cutInImage.classList.add('show-image'); 
             playShockSound();
-        }, 45000);
+        }, 55000);
 
-        // 88.5秒で2枚目のフェードアウト開始
-        setTimeout(() => { cutInImage.classList.remove('show-image'); }, 88500);
+        // 108.5秒で2枚目のフェードアウト開始
+        setTimeout(() => cutInImage.classList.remove('show-image'), 108500);
 
-        // 3枚目：未来の家族（90s〜最後まで）
+        // 3枚目表示（110s）、最後まで
         setTimeout(() => {
-            cutInImage.src = images['ED_FutureFamily'];
-            cutInImage.classList.add('show-image'); // フェードイン
-        }, 90000);
+            // 今回はプレースホルダーとして未来の家族写真（ユーザーは妊婦のビーチと言っているが、画像がないため前回の3枚目のコンセプトでプレースホルダー。ファイル名は ed_counter.png とする）
+            // ed_counter.png は、幸せな家族写真のドット絵プレースホルダーとする。
+            cutInImage.src = "ed_counter.png"; // 幸せな未来写真のドット絵プレースホルダーファイル名とする
+            cutInImage.classList.add('show-image'); 
+        }, 110000);
 
-        // エンドロール全体の終了 (166秒後)
+        // 曲の終了に合わせてエンドロール終了
         setTimeout(() => { 
             document.getElementById('end-roll-overlay').style.display = 'none'; 
             document.getElementById('feather-pen-overlay').style.display = 'flex'; 
             
+            // 7秒後にメタ的UIとリスタートボタン
             setTimeout(() => { 
                 document.getElementById('meta-game-ui').style.display = 'flex';
                 document.getElementById('restart-btn-feather').style.display = 'block'; 
@@ -566,7 +610,7 @@
     
     function startGame() { 
         document.getElementById('title-overlay').style.display = 'flex'; playTitleSound(); 
-        setTimeout(() => { document.getElementById('title-overlay').style.display = 'none'; printText("時は1997年、愛知県瀬戸市。\n俺は 私立探偵。\nある人物の素行調査で、この『名学大 瀬戸キャンパス』の校門に やってきた。\n\nすれ違う男子学生は やけに髪が長いし、\n携帯電話は やたらと分厚く アンテナが伸びている。\nどこか 懐かしいような、不思議な感覚だ。\n\n俺は 探偵として、まずは学内を調べてみることにした。\nよし、まずは【食堂】に行ってみよう。\n\n【チュートリアル：『場所移動』から 食堂 を選んでください】"); }, 3500); 
+        setTimeout(() => { document.getElementById('title-overlay').style.display = 'none'; printText("時は1997年、愛知県瀬戸市。\n俺は 私立探偵。\nある人物の素行調査で、この『名学大 瀬戸キャンパス』の校門に やってきた。\n\nすれ違う男子学生は やけに髪が長いし、\n携帯電話は やたらと分厚く アンテナが伸びている。\nどこか 懐かしいような、不思議な感覚だ。\n\n俺は 探偵として、まずは学内を調べてみることにした。\nよし、まずは【食堂】に行ってみよう.\n\n【チュートリアル：『場所移動』から 食堂 を選んでください】"); }, 3500); 
     }
 </script>
 </body>
