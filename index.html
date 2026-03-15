@@ -9,6 +9,8 @@
         /* --- エンディング・演出用CSS --- */
         #end-roll-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 400; display: none; overflow: hidden; text-align: center; border: 6px double #fff; box-sizing: border-box; }
         #end-roll-credits { position: absolute; width: 100%; top: 100%; animation: scrollCredits 166s linear forwards; padding-bottom: 100vh; }
+        
+        /* ★ スクロール距離を調整し、曲の最後まで流れるように ★ */
         @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -1400%; } }
         
         #ed-cutin-image-window { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 320px; height: auto; aspect-ratio: 4 / 3; border: 4px double #fff; z-index: 410; background: #000; padding: 2px; }
@@ -194,8 +196,9 @@
             <div style="margin-top: 250px;"></div>
             
             <div class="cr-role" style="font-size: 24px; color: #00ffff; text-shadow: 1px 1px 0 #0055ff;">【 特別協賛・英太郎の現在 】</div>
-            <div class="cr-name" style="font-size: 30px; margin-top: 30px; letter-spacing: 2px;">河上薬品商事株式会社</div>
-            <div class="cr-role" style="margin-top: 10px; font-size: 18px;">（ウォーター事業部）</div>
+            <div class="cr-name" style="font-size: 30px; margin-top: 30px; letter-spacing: 2px;">河上薬品株式会社</div>
+            <div class="cr-role" style="margin-top: 10px; font-size: 18px;">水事業部</div>
+            <div class="cr-name" style="font-size: 26px; margin-top: 10px; letter-spacing: 1px;">株式会社ビクトリー</div>
             
             <div style="margin-top: 40px;"></div>
             <div class="cr-history-box" style="border-color: #00ffff; background: rgba(0, 255, 255, 0.05); text-align: center;">
@@ -203,7 +206,7 @@
                 <div class="cr-history">私たちの体のおよそ60%は水でできています。</div>
                 <div class="cr-history">だからこそ、毎日飲む水にはこだわりたい。</div>
                 <div style="margin-top: 20px;"></div>
-                <div class="cr-history">河上薬品商事は、大自然が育んだ</div>
+                <div class="cr-history">株式会社ビクトリーは、大自然が育んだ</div>
                 <div class="cr-history">高品質な天然水（ミネラルウォーター）と、</div>
                 <div class="cr-history">いつでも冷水・温水が使える便利な</div>
                 <div class="cr-history">ウォーターサーバーをお届けしています。</div>
@@ -212,7 +215,11 @@
                 <div class="cr-history" style="color: #ff5555; font-size: 13px;">一度に大量に飲みすぎると水中毒になります（実証済）。</div>
                 <div style="margin-top: 30px;"></div>
                 <div class="cr-history" style="color: #aaa;">今日も英太郎は、愛する家族と仲間のため、</div>
-                <div class="cr-history" style="color: #aaa;">重いガロンボトルを担いで 街を奔走しています。</div>
+                <div class="cr-history" style="color: #aaa;">重いガロンボトルを担いで、街を、</div>
+                <div class="cr-history" style="color: #aaa;">そして日本全国を馬車馬のように奔走しています。</div>
+                <div style="margin-top: 20px;"></div>
+                <div class="cr-history" style="color: #aaa;">彼の情熱、彼の汗、彼の水——</div>
+                <div class="cr-history" style="color: #aaa;">そのすべてが、あなたの渇きを癒やします。</div>
             </div>
 
             <div style="margin-top: 300px;"></div>
@@ -331,11 +338,13 @@
     const sceneImage = document.getElementById('scene-image');
     const locationTitle = document.getElementById('location-title');
 
+    // ★ GitHubで管理されるすべての画像ファイル名 ★
     const images = {
         '校門': 'koumon.png', '食堂': 'shokudo.png', '喫煙所': 'kitsuenjo.png', 'チャペル': 'chapel.png',
         'ニュース_ハチ': 'news_bee.png', 'ニュース_水': 'news_water.png', 'ニュース_なめこ': 'news_nameko.png',
         'ラーメン屋': 'yukichan_counter.png', '厨房の英太郎': 'yukichan_ramen.png',
-        'ED_RamenCounter': 'ed_counter.png',
+        // --- ★ エンドロール用の3枚のファイル名を修正 ★ ---
+        'ed_beach_pregnant.png': 'ed_beach_pregnant.png', // 要望通り妊婦のビーチ写真の名前だが、内容はカウンター画像
         'ED_RevealChains': 'ed_chains.png',
         'ED_FutureFamily': 'ed_family.png'
     };
@@ -374,7 +383,6 @@
         location.reload(); 
     }
 
-    // スタート画面のタップイベントに対応
     function showPasscodeScreen() {
         initAudio();
         document.getElementById('start-overlay').style.display = 'none';
@@ -437,7 +445,7 @@
             let savedMsg = localStorage.getItem('blessing_' + target);
             if (gameState.talkCount[target] >= 3 && savedMsg) {
                 playShockSound();
-                printText(`＞ ${target} の様子がおかしい……。\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
+                printText(`＞ ${target} の様子がおかしい……。\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突故としてメタ的なメッセージを放った！`);
             } else {
                 printText(`＞ ${target} の証言を聞いた。\n\n${testimonies[target]}`); 
             }
@@ -490,15 +498,19 @@
         } 
     }
 
+    // ★ エンディングストーリーを拡張 ★
     let ep = 0; const et = [
-        "＞ 探偵と残されたメンバーたちは、夜中に光る怪しい提灯の店にやってきた。", 
-        "高井「そういえば英太郎って、この『ゆきちゃんラーメン』でバイトしてたよな. 最近 姿を見ないけど…」", 
+        "＞ 探偵と残されたメンバーたちは、夜中に光る怪しい提灯の店『ゆきちゃんラーメン』にやってきた。", 
+        "高井「そういえば英太郎って、ここでバイトしてたよな. 最近 姿を見ないけど…」", 
         "＞ ……！！\n厨房の奥を見ると……", 
         "＞ 鎖に繋がれ、白目を剥きながら無限に謎の辛い麺を作り続ける英太郎の姿があった！", 
         "店長『こいつ、ウチの秘伝のスープこぼしやがったから、体で払ってもらってんだわ』\n\n探偵「……食堂の赤い文字は、この激辛ラーメンの汁か……」",
         "＞ 探偵はたまらず厨房に飛び込み、英太郎を救出した！\n\n探偵「……親父！ 大丈夫か！」\n英太郎「お、親父…？ 君は誰だ…？」",
         "＞ 探偵――いや、『楓晴（ふうせい）』は 静かに微笑んだ。\n実は 彼こそが、未来から 様子を見に来た 英太郎の『息子』だったのだ。\n\n（昔からこんな風に、他人のために苦労してばかりだったのか……）", 
-        "＞ 楓晴は、汗とラー油にまみれた若き日の父の背中を見て、強く誓った。\n\n『未来に帰ったら、もっと頑張って 親父を楽させてやろう』と――。"
+        "＞ 楓晴は、汗とラー油にまみれた若き日の父の背中を見て、強く誓った。\n\n『未来に帰ったら、もっと頑張って 親父を楽させてやろう』と――。",
+        "＞ その頃、逃亡した井口は……\n\n（ガタンゴトン、ガタンゴトン……）\n\n井口「……ここなら、探偵も、英太郎も、蟹江も来ない……。千葉、か……」\n\n＞ 井口は遠く離れた千葉の地で、新たな生活（と飲み過ぎ）を始めていた。\n\n＞ だが、英太郎は、楓晴は、いつか必ず井口を見つけ出すだろう。\n＞ それが、友情という名の挽歌だからだ。",
+        "＞ そして、現在——英太郎は、水事業部株式会社ビクトリーで、\n＞ 鎖の代わりにウォーターサーバーを担ぎ、日本全国を飛び回っている。\n＞ いつか、千葉へ届けるガロンボトルの中に、井口へのメッセージを隠して……。",
+        "＞ お祝いのメッセージは、あなたの心の中に。"
     ];
     window.playEndingCutscene = function() {
         playBeep('select'); subCmdArea.style.display = 'none';
@@ -517,8 +529,8 @@
         const cutInImage = document.getElementById('ed-cutin-image');
         document.getElementById('end-roll-overlay').style.display = 'block';
 
-        // 1枚目：幸せなカウンター（0s〜45s）
-        cutInImage.src = images['ED_RamenCounter'];
+        // 1枚目：要望通り ed_beach_pregnant.png（0s〜45s）
+        cutInImage.src = images['ed_beach_pregnant.png']; // 1枚目のキーを変更
         setTimeout(() => cutInImage.classList.add('show-image'), 100); // 即座にフェードイン
 
         // 43.5秒で1枚目のフェードアウト開始
