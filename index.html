@@ -14,9 +14,9 @@
         /* --- エンディング・演出用CSS --- */
         #end-roll-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 400; display: none; overflow: hidden; text-align: center; border: 6px double #fff; box-sizing: border-box; }
         
-        /* ★ スクロール距離を-3000%に増やし、2分46秒(166s)でたっぷり流れるように調整 ★ */
-        #end-roll-credits { position: absolute; width: 100%; top: 100%; animation: scrollCredits 166s linear forwards; padding-bottom: 100vh; }
-        @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -3000%; } }
+        /* ★ スクロール時間を84秒に変更し、距離も最適化 ★ */
+        #end-roll-credits { position: absolute; width: 100%; top: 100%; animation: scrollCredits 84s linear forwards; padding-bottom: 100vh; }
+        @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -1900%; } }
         
         #ed-cutin-image-window { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 320px; height: auto; aspect-ratio: 4 / 3; border: 4px double #fff; z-index: 410; background: #000; padding: 2px; }
         
@@ -27,12 +27,12 @@
         }
         .show-image { opacity: 1 !important; }
 
-        .cr-title { font-size: 30px; color: #ffeb3b; margin-top: 60px; margin-bottom: 100px; text-shadow: 2px 2px 0 #f00;}
+        .cr-title { font-size: 30px; color: #ffeb3b; margin-top: 60px; margin-bottom: 80px; text-shadow: 2px 2px 0 #f00;}
         .cr-role { font-size: 14px; color: #aaa; margin-top: 25px; }
         .cr-name { font-size: 20px; margin-bottom: 5px; color: #fff; }
         .cr-song-title { font-size: 24px; color: #fff; margin-bottom: 15px; text-shadow: 1px 1px 0 #888; }
         
-        .cr-history-year { font-size: 22px; color: #ffeb3b; margin-top: 80px; margin-bottom: 20px; text-decoration: underline;}
+        .cr-history-year { font-size: 22px; color: #ffeb3b; margin-top: 60px; margin-bottom: 20px; text-decoration: underline;}
         .cr-history-box { text-align: left; display: inline-block; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; border: 1px dotted #888; width: 85%; box-sizing: border-box;}
         .cr-history { font-size: 16px; color: #ddd; line-height: 1.8; margin-bottom: 10px;}
         .cr-hit-song { font-size: 15px; color: #0f0; margin-top: 10px; font-style: italic;}
@@ -141,7 +141,7 @@
             <div class="cr-name">秋葉</div>
             <div class="cr-name">蟹江</div>
             
-            <div style="margin-top: 150px;"></div>
+            <div style="margin-top: 100px;"></div>
             
             <div class="cr-role">企画・原案</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">脚本・シナリオ進行</div><div class="cr-name">センズリコキお</div>
@@ -179,14 +179,14 @@
             <div class="cr-role">圧倒的な自画自賛</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">タイトルロゴの1ドット微調整</div><div class="cr-name">センズリコキお</div>
 
-            <div style="margin-top: 150px;"></div>
+            <div style="margin-top: 100px;"></div>
             
             <div class="cr-role">グラフィック制作協力</div><div class="cr-name">Gemini (Nano Banana 2)</div>
             <div class="cr-role">友情出演（永遠の奴隷労働）</div><div class="cr-name">英太郎</div>
             <div class="cr-role">ロケ地全面協力</div>
             <div class="cr-name">名古屋学院大学 瀬戸キャンパス<br>某台湾ラーメン店</div>
             
-            <div style="margin-top: 180px;"></div>
+            <div style="margin-top: 120px;"></div>
 
             <div class="cr-role" style="font-size: 20px; text-shadow: 1px 1px 0 #555;">【 あの頃の記憶 1997-2000 】</div>
             
@@ -224,7 +224,7 @@
                 <div class="cr-hit-song">♪ TSUNAMI / 桜坂</div>
             </div>
 
-            <div style="margin-top: 250px;"></div>
+            <div style="margin-top: 180px;"></div>
             
             <div class="cr-role" style="font-size: 24px; color: #00ffff; text-shadow: 1px 1px 0 #0055ff;">【 特別協賛・英太郎の現在 】</div>
             <div class="cr-name" style="font-size: 30px; margin-top: 30px; letter-spacing: 2px;">河上薬品株式会社</div>
@@ -253,7 +253,7 @@
                 <div class="cr-history" style="color: #aaa;">そのすべてが、あなたの渇きを癒やします。</div>
             </div>
 
-            <div style="margin-top: 250px;"></div>
+            <div style="margin-top: 180px;"></div>
             
             <div class="cr-role" style="font-size: 24px; color: #00ffff; text-shadow: 1px 1px 0 #0055ff;">【 井口のその後 】</div>
             <div class="cr-name" style="font-size: 30px; margin-top: 30px; letter-spacing: 2px;">株式会社ピーナッツ・フューチャー</div>
@@ -262,24 +262,18 @@
             
             <div style="margin-top: 40px;"></div>
             <div class="cr-history-box" style="border-color: #00ffff; background: rgba(0, 255, 255, 0.05); text-align: center;">
-                <div class="cr-history" style="color: #00ffff; font-size: 18px; margin-bottom: 20px;">〜 落花生から未来を創る 〜</div>
-                <div class="cr-history">あの日、大学から猛ダッシュで逃亡した井口は、</div>
-                <div class="cr-history">なんとそのまま千葉県へと移住していた。</div>
+                <div class="cr-history">大学から逃げた井口は、なんとそのまま千葉へ。</div>
+                <div class="cr-history">そこでそのまま移住し、一念発起。</div>
+                <div class="cr-history">現在では事業を立ち上げ、社長として頑張っている。</div>
                 <div style="margin-top: 20px;"></div>
-                <div class="cr-history">太平洋の潮風と、広大な落花生畑。</div>
-                <div class="cr-history">その生命力に感銘を受けた彼は一念発起し、</div>
-                <div class="cr-history">事業を立ち上げ、見事社長として成功を収めたのだ。</div>
-                <div style="margin-top: 30px;"></div>
                 <div class="cr-history" style="color: #aaa;">「いつかまた、英太郎と一緒に働きたい……」</div>
-                <div class="cr-history" style="color: #aaa;">今日も彼は、愛するピーナッツ畑を見つめながら</div>
-                <div class="cr-history" style="color: #aaa;">密かにそう願っている。</div>
+                <div class="cr-history" style="color: #aaa;">彼は密かにそう願っているという。</div>
                 <div style="margin-top: 20px;"></div>
-                <div class="cr-history" style="color: #aaa;">一方の英太郎も、ウォーターサーバーを担いだまま</div>
-                <div class="cr-history" style="color: #aaa;">家族を連れて千葉へ行こうとしているとか、</div>
-                <div class="cr-history" style="color: #aaa;">していないとか……。</div>
+                <div class="cr-history" style="color: #aaa;">もしかすると、英太郎も家族を連れて</div>
+                <div class="cr-history" style="color: #aaa;">千葉へ行こうとしているとか、していないとか……。</div>
             </div>
 
-            <div style="margin-top: 300px;"></div>
+            <div style="margin-top: 200px;"></div>
             
             <div class="cr-role">ＥＤテーマ</div>
             <div class="cr-song-title">『英太郎のララバイ』</div>
@@ -296,7 +290,7 @@
             <div class="cr-role">譜面めくり（風圧）</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">レコーディング後の猛反省会</div><div class="cr-name">センズリコキお</div>
 
-            <div style="margin-top: 400px;"></div>
+            <div style="margin-top: 300px;"></div>
             <div class="cr-title" style="font-size: 32px; color: #fff; letter-spacing: 4px;">THANK YOU FOR PLAYING!</div>
             <div style="margin-top: 100vh;"></div>
         </div>
@@ -666,37 +660,37 @@
         }
     };
     
-    // ★ エンドロールのフェードイン/アウト制御 ★
+    // ★ エンドロールのフェードイン/アウト制御（尺を84秒に圧縮） ★
     function startEndingRoll() {
         subCmdArea.style.display = 'none'; endingMusic.play().catch(e => console.log(e));
         
         const cutInImage = document.getElementById('ed-cutin-image');
         document.getElementById('end-roll-overlay').style.display = 'block';
 
-        // 1枚目：幸せなビーチ（ed_beach_pregnant.png）（0s〜55s）
+        // 1枚目：幸せなビーチ（ed_beach_pregnant.png）（0s〜28s）
         cutInImage.src = images['ed_beach_pregnant.png']; 
         setTimeout(() => cutInImage.classList.add('show-image'), 100); 
 
-        // 53.5秒で1枚目のフェードアウト開始
-        setTimeout(() => { cutInImage.classList.remove('show-image'); }, 53500);
+        // 26.5秒で1枚目のフェードアウト開始
+        setTimeout(() => { cutInImage.classList.remove('show-image'); }, 26500);
 
-        // 2枚目：厨房の真実（ED_RevealChains）（55s〜1分50s）
+        // 2枚目：厨房の真実（ED_RevealChains）（28s〜56s）
         setTimeout(() => {
             cutInImage.src = images['ED_RevealChains'];
             cutInImage.classList.add('show-image'); 
             playShockSound();
-        }, 55000);
+        }, 28000);
 
-        // 108.5秒で2枚目のフェードアウト開始
-        setTimeout(() => { cutInImage.classList.remove('show-image'); }, 108500);
+        // 54.5秒で2枚目のフェードアウト開始
+        setTimeout(() => { cutInImage.classList.remove('show-image'); }, 54500);
 
-        // 3枚目：未来の家族（ED_FutureFamily）（110s〜最後まで）
+        // 3枚目：未来の家族（ED_FutureFamily）（56s〜最後まで）
         setTimeout(() => {
             cutInImage.src = images['ED_FutureFamily'];
             cutInImage.classList.add('show-image'); 
-        }, 110000);
+        }, 56000);
 
-        // 166秒後(2分46秒)に終了
+        // 84秒後(1分24秒)に終了
         setTimeout(() => { 
             document.getElementById('end-roll-overlay').style.display = 'none'; 
             document.getElementById('feather-pen-overlay').style.display = 'flex'; 
@@ -705,7 +699,7 @@
                 document.getElementById('meta-game-ui').style.display = 'flex';
                 document.getElementById('restart-btn-feather').style.display = 'block'; 
             }, 7000); 
-        }, 166000); 
+        }, 84000); 
     }
 </script>
 </body>
