@@ -353,6 +353,14 @@
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
     }
+    
+    // ★ 音声サスペンド対策（prompt後などに呼ぶ） ★
+    function resumeAudio() {
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
     function playBeep(type = 'text') {
         if (!audioCtx) return;
         try {
@@ -364,7 +372,6 @@
         } catch (e) {}
     }
     
-    // ★ 悲劇的なショック音 ★
     function playShockSound() {
         if (!audioCtx) return;
         try {
@@ -377,7 +384,7 @@
             osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 1.5); osc2.stop(audioCtx.currentTime + 1.5);
         } catch(e) {}
     }
-    // ★ キーワード発見音（キラキラ） ★
+
     function playClueSound() {
         if (!audioCtx) return;
         try {
@@ -592,8 +599,10 @@
         else if (action === '謎を解く') { 
             if (!(gameState.clues.koumon && gameState.clues.shokudo && gameState.clues.kitsuenjo && gameState.clues.chapel)) { printText("蟹江「まだ文字が足りないようだな.\n校門、食堂、喫煙所、チャペルを くまなく調べてから来な」"); return; }
             setTimeout(() => {
-                if (prompt("隠された4文字のひらがなを入力しろ") === "かわかみ") { 
-                    // ★ 正解時にキラキラ音 ★
+                let ans = prompt("隠された4文字のひらがなを入力しろ");
+                resumeAudio(); // ★ 入力ダイアログ後に音声を確実に戻す ★
+                
+                if (ans === "かわかみ") { 
                     playClueSound(); 
                     printText("蟹江「正解だ. よく見つけたな.\n約束通り 決定的な証拠【テキーラの空瓶】を渡そう」\n\n＞ これで全ての証拠が揃ったはずだ！"); 
                     gameState.puzzleCleared = true; showMainMenu(); 
@@ -616,7 +625,6 @@
                 if (!gameState.puzzleCleared) { printText("探偵「井口！ お前が犯人だ！」\n井口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない."); }
                 else { 
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
-                    // ★ 逃亡後、大学を適当に探して誰も心配しない流れ、ショック音 ★
                     playShockSound();
                     printText("探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n\n＞ 井口は猛ダッシュで逃げ出した！\n置き手紙には『あいつに飲ませすぎた. すまない』とあった.\n\n探偵たちは大学内をくまなく適当に探したが、\n多分すぐに帰ってくるだろうと誰も大して心配しなかった.\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 一行は、逃げた井口のことなどすっかり忘れ、ラーメン屋に向かうことにした…….", () => {
                         subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ ラーメン屋へ行く</button>';
@@ -640,7 +648,7 @@
     
     window.playEndingCutscene = function() {
         playBeep('select'); subCmdArea.style.display = 'none';
-        if (ep === 0) { sceneImage.src = images['ラーメン屋']; locationTitle.innerText = "某ラーメン店"; playClueSound(); } // 音を追加
+        if (ep === 0) { sceneImage.src = images['ラーメン屋']; locationTitle.innerText = "某ラーメン店"; playClueSound(); }
         else if (ep === 1) locationTitle.innerText = "ゆきちゃんラーメン";
         else if (ep === 3) { sceneImage.src = images['厨房の英太郎']; locationTitle.innerText = "厨房の英太郎"; playShockSound(); }
         else if (ep === 6) sceneImage.src = images['ラーメン屋'];
@@ -649,7 +657,7 @@
             printText(et[ep], () => { 
                 if (ep === et.length) {
                     // GOOD ENDが表示された後、自動でエンドロールへ
-                    setTimeout(startEndingRoll, 2000);
+                    setTimeout(startEndingRoll, 3000);
                 } else {
                     subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = `<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ 次へ</button>`; 
                 }
