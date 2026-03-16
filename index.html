@@ -14,7 +14,7 @@
         /* --- エンディング・演出用CSS --- */
         #end-roll-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 400; display: none; overflow: hidden; text-align: center; border: 6px double #fff; box-sizing: border-box; }
         
-        /* ★ スクロール速度0.5倍速に対応: 移動距離(top)を-1900%から-950%に半減 ★ */
+        /* スクロール速度0.5倍速対応 */
         #end-roll-credits { position: absolute; width: 100%; top: 100%; animation: scrollCredits 84s linear forwards; padding-bottom: 50vh; }
         @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -950%; } }
         
@@ -22,7 +22,6 @@
         #ed-cutin-image { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .show-image { opacity: 1 !important; }
 
-        /* ★ 余白を半分にして、スクロール速度半減に合わせました ★ */
         .cr-title { font-size: 30px; color: #ffeb3b; margin-top: 30px; margin-bottom: 40px; text-shadow: 2px 2px 0 #f00;}
         .cr-role { font-size: 14px; color: #aaa; margin-top: 15px; }
         .cr-name { font-size: 20px; margin-bottom: 5px; color: #fff; }
@@ -41,12 +40,12 @@
         #meta-game-ui { display: none; flex-direction: column; align-items: center; margin-top: 30px; width: 90%; max-width: 400px; border-top: 2px dashed #555; padding-top: 20px;}
         .meta-title { color: #ffeb3b; font-size: 20px; margin-bottom: 10px; text-shadow: 1px 1px 0 #f00; font-family: 'DotGothic16';}
         .meta-desc { font-size: 14px; margin-bottom: 15px; font-family: 'DotGothic16'; line-height: 1.4;}
-        #bless-char { font-family: 'DotGothic16'; font-size: 16px; padding: 5px; margin-bottom: 10px; background: #222; color: #fff; border: 1px solid #fff;}
-        #bless-msg { font-family: 'DotGothic16'; font-size: 16px; padding: 10px; margin-bottom: 15px; width: 100%; box-sizing: border-box; background: #111; color: #fff; border: 1px solid #fff; resize: none;}
+        #bless-char { font-family: 'DotGothic16'; font-size: 16px; padding: 5px; margin-bottom: 10px; background: #222; color: #fff; border: 1px solid #fff; -webkit-appearance: none; appearance: none; border-radius: 0;}
+        #bless-msg { font-family: 'DotGothic16'; font-size: 16px; padding: 10px; margin-bottom: 15px; width: 100%; box-sizing: border-box; background: #111; color: #fff; border: 1px solid #fff; resize: none; -webkit-appearance: none; appearance: none; border-radius: 0;}
         #save-bless-btn { background: #f00; border: 2px solid #fff; color: #fff; font-size: 16px; font-family: 'DotGothic16'; cursor: pointer; padding: 10px 20px; font-weight: bold;}
 
         #passcode-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 350; display: none; flex-direction: column; justify-content: center; align-items: center; border: 6px double #fff; box-sizing: border-box; text-align: center; }
-        #pass-input { font-family: 'DotGothic16'; font-size: 24px; width: 120px; text-align: center; padding: 5px; background: #111; color: #0f0; border: 2px solid #555; outline: none; letter-spacing: 5px; }
+        #pass-input { font-family: 'DotGothic16'; font-size: 24px; width: 120px; text-align: center; padding: 5px; background: #111; color: #0f0; border: 2px solid #555; outline: none; letter-spacing: 5px; -webkit-appearance: none; appearance: none; border-radius: 0;}
 
         :root { --fami-border-size: 4px; }
         body { background-color: #000; color: #fff; font-family: 'DotGothic16', sans-serif; display: flex; justify-content: center; align-items: flex-start; height: 100vh; height: 100dvh; margin: 0; user-select: none; overflow: hidden; }
@@ -487,13 +486,15 @@
         textArea.innerHTML = "気を取り直して、もう一度推理しよう…….\n誰が真犯人なんだ…？"; showMainMenu(); 
     }
     
-    // ★ 音声バグ対策：ゲーム内UIでパスワード入力を行う ★
+    // ★ 音声バグ完全対策：promptを廃止し、ゲーム内UIで入力させる ★
     window.submitPuzzle = function() {
         let ans = document.getElementById('puzzle-input').value;
         if (ans === "かわかみ") { 
             playClueSound(); 
-            printText("蟹江「正解だ. よく見つけたな.\n約束通り 決定的な証拠【テキーラの空瓶】を渡そう」\n\n＞ これで全ての証拠が揃ったはずだ！"); 
-            gameState.puzzleCleared = true; showMainMenu(); 
+            printText("蟹江「正解だ. よく見つけたな.\n約束通り 決定的な証拠【テキーラの空瓶】を渡そう」\n\n＞ これで全ての証拠が揃ったはずだ！", () => {
+                showMainMenu();
+            }); 
+            gameState.puzzleCleared = true; 
         } else { 
             playBeep('cancel');
             printText("蟹江「フッ、全然違うな. ひらがな4文字だぞ」", () => {
@@ -561,7 +562,7 @@
         else if (action === '謎を解く') { 
             if (!(gameState.clues.koumon && gameState.clues.shokudo && gameState.clues.kitsuenjo && gameState.clues.chapel)) { printText("蟹江「まだ文字が足りないようだな.\n校門、食堂、喫煙所、チャペルを くまなく調べてから来な」"); return; }
             
-            // ★ promptを使わず、ゲーム内のUIで入力させることで音声バグを完全に回避 ★
+            // ★ UI上で直接入力させることで音声バグを回避 ★
             printText("蟹江「よし、隠された4文字のひらがなを言ってみろ」", () => {
                 mainCmdArea.style.display = 'none';
                 subCmdArea.style.display = 'flex';
@@ -569,7 +570,7 @@
                 subCmdArea.style.alignItems = 'center';
                 subCmdArea.style.justifyContent = 'center';
                 subCmdArea.innerHTML = `
-                    <input type="text" id="puzzle-input" placeholder="ひらがな4文字" style="font-family:'DotGothic16'; font-size:18px; padding:5px; margin-bottom:10px; text-align:center; background:#111; color:#0f0; border:2px solid #555; width: 80%;">
+                    <input type="text" id="puzzle-input" placeholder="ひらがな4文字" style="font-family:'DotGothic16'; font-size:18px; padding:5px; margin-bottom:10px; text-align:center; background:#111; color:#0f0; border:2px solid #555; width: 80%; -webkit-appearance: none; appearance: none; border-radius: 0;">
                     <div style="display:flex; gap:10px; width:80%;">
                         <button class="cmd-btn special-btn" style="flex:1; justify-content:center;" onclick="submitPuzzle()">答える</button>
                         <button class="cmd-btn btn-back" style="flex:1; justify-content:center;" onclick="showMainMenu()">戻る</button>
@@ -613,6 +614,7 @@
         "【 GOOD END 】"
     ];
     
+    // ★ iPhoneでエンディング曲が鳴らないバグを回避するため、最後はボタンを手動タップさせる ★
     window.playEndingCutscene = function() {
         playBeep('select'); subCmdArea.style.display = 'none';
         if (ep === 0) { sceneImage.src = images['ラーメン屋']; locationTitle.innerText = "某ラーメン店"; playClueSound(); }
@@ -623,17 +625,19 @@
         if (ep < et.length) { 
             printText(et[ep], () => { 
                 if (ep === et.length) {
-                    setTimeout(startEndingRoll, 3000);
+                    // ★ ここが超重要！自動進行ではなく、タップさせて音楽を確実に出す ★
+                    subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; 
+                    subCmdArea.innerHTML = `<button class="cmd-btn special-btn" onclick="startEndingRoll()">▶ エンディングへ進む</button>`; 
                 } else {
-                    subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = `<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ 次へ</button>`; 
+                    subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; 
+                    subCmdArea.innerHTML = `<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ 次へ</button>`; 
                 }
             }); 
             ep++; 
         }
     };
     
-    // ★ エンドロール：1分24秒(84秒)バージョン ★
-    // 画像切り替えは3等分(28秒ごと)で処理
+    // ★ エンドロール：1分24秒(84秒)バージョン・画像3等分 ★
     function startEndingRoll() {
         subCmdArea.style.display = 'none'; endingMusic.play().catch(e => console.log(e));
         
