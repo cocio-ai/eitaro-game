@@ -10,6 +10,10 @@
     <meta property="og:type" content="website">
 
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Kaisei+Decol:wght@700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+
     <style>
         /* --- エンディング・演出用CSS --- */
         #end-roll-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 400; display: none; overflow: hidden; text-align: center; border: 6px double #fff; box-sizing: border-box; }
@@ -274,7 +278,8 @@
             <div class="meta-title">ゲームをクリアしたみんなへ</div>
             <div class="meta-desc">
                 これで終わりではありません。ぜひゲームに加わってください！<br>
-                ゲーム内の登場人物たちに、英太郎への「祝福のメッセージ」を仕込むことができます。
+                ゲーム内の登場人物たちに、英太郎への「祝福のメッセージ」を仕込むことができます。<br>
+                <span style="color:#0f0;">※メッセージはオンラインで全世界に共有されます！</span>
             </div>
             <div style="margin-bottom: 5px; color:#ffeb3b; font-weight: bold;">【 重要 】自分の名前を選んでください ▼</div>
             <select id="bless-char">
@@ -313,6 +318,29 @@
 </div>
 
 <script>
+    // ★ Firebase（オンラインデータベース）の設定と初期化 ★
+    const firebaseConfig = {
+        apiKey: "AIzaSyBBbQiIeJXgi8lvpL9Ex4PH_Dmxek75qVQ",
+        authDomain: "eitaro-game.firebaseapp.com",
+        databaseURL: "https://eitaro-game-default-rtdb.firebaseio.com",
+        projectId: "eitaro-game",
+        storageBucket: "eitaro-game.firebasestorage.app",
+        messagingSenderId: "104143680164",
+        appId: "1:104143680164:web:d6d8e145561e74956e6c31"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // オンラインで共有されているメッセージを保存する変数
+    let globalBlessings = {};
+    
+    // ゲーム起動時にデータベースからみんなのメッセージを取得して常に最新状態を保つ
+    database.ref('blessings').on('value', (snapshot) => {
+        if (snapshot.exists()) {
+            globalBlessings = snapshot.val();
+        }
+    });
+
     let audioCtx;
     function initAudio() {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -419,14 +447,24 @@
     };
     let typingInterval; let isTyping = false;
 
-    function saveBlessingAndRestart() {
+    // ★ メッセージをオンラインデータベースに保存する関数 ★
+    window.saveBlessingAndRestart = function() {
         const char = document.getElementById('bless-char').value;
         const msg = document.getElementById('bless-msg').value;
+        
         if(msg.trim() !== "") {
-            localStorage.setItem('blessing_' + char, msg);
-            alert(`${char} にメッセージを仕込みました！\n\n【ヒント】\n再スタート後、ゲーム内でみんなの話を「よく聞いて」みましょう……。`);
+            // Firebaseに書き込み
+            database.ref('blessings/' + char).set({
+                message: msg,
+                timestamp: Date.now()
+            }).then(() => {
+                alert(`${char} にオンラインでメッセージを仕込みました！\n（世界中のプレイヤーの画面に反映されます）\n\n【ヒント】\n再スタート後、ゲーム内でみんなの話を「よく聞いて」みましょう……。`);
+                location.reload(); 
+            }).catch((error) => {
+                console.error("Error writing document: ", error);
+                alert("保存に失敗しました。通信環境を確認してください。");
+            });
         }
-        location.reload(); 
     }
 
     function showPasscodeScreen() {
@@ -515,7 +553,11 @@
         } 
         else if (action === '聞く') {
             gameState.talkCount[target]++;
-            let savedMsg = localStorage.getItem('blessing_' + target);
+            
+            // ★ オンラインデータベースからメッセージを読み込む ★
+            let savedMsgObj = globalBlessings[target];
+            let savedMsg = savedMsgObj ? savedMsgObj.message : null;
+            
             if (gameState.talkCount[target] >= 3 && savedMsg) {
                 playShockSound();
                 printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
