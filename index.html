@@ -18,7 +18,6 @@
         /* --- エンディング・演出用CSS --- */
         #end-roll-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 400; display: none; overflow: hidden; text-align: center; border: 6px double #fff; box-sizing: border-box; }
         
-        /* ★ 移動距離(-450%)を調整して速度を維持 ★ */
         #end-roll-credits { position: absolute; width: 100%; top: 100%; animation: scrollCredits 96s linear forwards; padding-bottom: 50vh; }
         @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -450%; } }
         
@@ -154,32 +153,30 @@
             
             <div class="cr-history-year">▶ 1997年</div>
             <div class="cr-history-box">
-                <div class="cr-history">・消費税5%へ引き上げ</div>
-                <div class="cr-history">・「たまごっち」爆発的ブーム</div>
-                <div class="cr-history">・映画『もののけ姫』大ヒット</div>
-                <div class="cr-hit-song">♪ CAN YOU CELEBRATE? / 硝子の少年</div>
+                <div class="cr-history">・ハイパーヨーヨーで指が擦り切れる</div>
+                <div class="cr-history">・ポケットピカチュウをひたすら振る</div>
+                <div class="cr-hit-song">♪ 1/3の純情な感情 / WHITE BREATH</div>
             </div>
 
             <div class="cr-history-year">▶ 1998年</div>
             <div class="cr-history-box">
-                <div class="cr-history">・長野オリンピック開催</div>
-                <div class="cr-history">・横浜高校 松坂大輔 春夏連覇</div>
-                <div class="cr-history">・iMac発売、スケルトンブーム</div>
-                <div class="cr-hit-song">♪ 夜空ノムコウ / 誘惑</div>
+                <div class="cr-history">・MDのラベルをレタリングシートで擦る</div>
+                <div class="cr-history">・何でもかんでも「スケルトン」化</div>
+                <div class="cr-hit-song">♪ ピンク スパイダー / 夏色</div>
             </div>
 
             <div class="cr-history-year">▶ 1999年</div>
             <div class="cr-history-box">
-                <div class="cr-history">・NTTドコモ「iモード」サービス開始</div>
-                <div class="cr-history">・2ちゃんねる 開設 / AIBO 発売</div>
-                <div class="cr-hit-song">♪ だんご3兄弟 / Automatic</div>
+                <div class="cr-history">・ノストラダムスの大予言、何も起きず</div>
+                <div class="cr-history">・本を見ながら自力で「着メロ」を打ち込む</div>
+                <div class="cr-hit-song">♪ アポロ / カブトムシ</div>
             </div>
 
             <div class="cr-history-year">▶ 2000年</div>
             <div class="cr-history-box">
-                <div class="cr-history">・2000年問題（Y2K問題）無事通過</div>
-                <div class="cr-history">・プレイステーション2 発売</div>
-                <div class="cr-hit-song">♪ TSUNAMI / 桜坂</div>
+                <div class="cr-history">・PS2を「DVD再生機」として親にねだる</div>
+                <div class="cr-history">・動物占いで合コンの話題を回す</div>
+                <div class="cr-hit-song">♪ NEO UNIVERSE / サウダージ</div>
             </div>
 
             <div style="margin-top: 80px;"></div>
@@ -542,7 +539,7 @@
             } else if (gameState.currentLocation === '喫煙所') {
                 if (target === '灰皿') { 
                     if(gameState.kanieFound) { playClueSound(); r = "＞ 灰皿の横に、誰かの『ポケベル』が落ちている.\n画面には「0840（おはよう）」の数字が残っている.\nその裏に シールで文字が貼られていた！\n\n第3のワード【 か 】を発見した！"; gameState.clues.kitsuenjo = true; }
-                    else { r = "＞灰皿の横に、誰かの『ポケベル』が落ちている.\n画面には「0840（おはよう）」の数字が残っている."; }
+                    else { r = "＞ 灰皿の横に、誰かの『ポケベル』が落ちている.\n画面には「0840（おはよう）」の数字が残っている."; }
                 }
                 else if (target === '自販機') { r = "＞ 自販機を調べた.\n「今年から消費税5%導入に伴い値上げしました」という悲しい貼り紙がある."; }
             } else if (gameState.currentLocation === 'チャペル') {
@@ -641,7 +638,6 @@
         }
     };
     
-    // ★ 映画のようなクロスフェード演出と、全体の時間を96秒に延長 ★
     function startEndingRoll() {
         subCmdArea.style.display = 'none'; endingMusic.play().catch(e => console.log(e));
         
