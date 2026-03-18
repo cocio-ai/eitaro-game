@@ -139,12 +139,7 @@
             <div class="cr-role">脚本・プログラム</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">キャラクター・背景美術</div><div class="cr-name">センズリコキお</div>
             <div class="cr-role">デバッグ・テストプレイ</div><div class="cr-name">センズリコキお</div>
-            <div class="cr-role">総合エグゼクティブプロデューサー</div><div class="cr-name">センズリコキお</div>
             
-            <div style="margin-top: 30px;"></div>
-            <div class="cr-role">深夜の買い出し担当（主に牛丼）</div><div class="cr-name">センズリコキお</div>
-            <div class="cr-role">チームのモチベーション維持（自作自演）</div><div class="cr-name">センズリコキお</div>
-
             <div style="margin-top: 60px;"></div>
             
             <div class="cr-role">グラフィック制作協力</div><div class="cr-name">Gemini (Nano Banana 2)</div>
@@ -321,6 +316,7 @@
         } catch (e) {}
     }
     
+    // 【ネガティブ】驚き・ショック・恐怖
     function playShockSound() {
         if (!audioCtx) return;
         try {
@@ -334,6 +330,7 @@
         } catch(e) {}
     }
 
+    // 【ポジティブ】手がかり発見
     function playClueSound() {
         if (!audioCtx) return;
         try {
@@ -347,6 +344,24 @@
             osc.start(); osc.stop(audioCtx.currentTime + 0.3);
         } catch(e) {}
     }
+    
+    // ★ 追加【ポジティブ】隠しメッセージ発見時のファンファーレ ★
+    function playSuccessSound() {
+        if (!audioCtx) return;
+        try {
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.type = 'sine'; 
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // ド
+            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // ミ
+            osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // ソ
+            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); // 高いド
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6); 
+            osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+        } catch(e) {}
+    }
+
+    // 【ネガティブ】ゲームオーバー
     function playGameOverSound() {
         if (!audioCtx) return;
         try {
@@ -359,6 +374,7 @@
             osc1.start(); osc2.start(); osc1.stop(audioCtx.currentTime + 2.5); osc2.stop(audioCtx.currentTime + 2.5);
         } catch(e) {}
     }
+
     function playTitleSound() {
         if (!audioCtx) return;
         try {
@@ -410,7 +426,6 @@
     };
     let typingInterval; let isTyping = false;
 
-    // ★ メッセージをオンラインデータベースに保存する関数 ★
     window.saveBlessingAndRestart = function() {
         const char = document.getElementById('bless-char').value;
         const msg = document.getElementById('bless-msg').value;
@@ -521,8 +536,9 @@
             let savedMsg = savedMsgObj ? savedMsgObj.message : null;
             
             if (gameState.talkCount[target] >= 3 && savedMsg) {
-                playShockSound();
-                printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突 মাথায়としてメタ的なメッセージを放った！`);
+                // ★ 隠しメッセージ用のポジティブな効果音に変更し、文字化けを修正 ★
+                playSuccessSound();
+                printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
             } else {
                 printText(`＞ ${target} の証言を聞いた.\n\n${testimonies[target]}`); 
             }
@@ -639,7 +655,6 @@
         }
     };
     
-    // ★ 映画のようなクロスフェード演出と、全体の時間を96秒に延長 ★
     function startEndingRoll() {
         subCmdArea.style.display = 'none'; endingMusic.play().catch(e => console.log(e));
         
