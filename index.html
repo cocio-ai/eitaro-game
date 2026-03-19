@@ -361,7 +361,9 @@
         clues: { koumon: false, shokudo: false, kitsuenjo: false, chapel: false }, 
         puzzleCleared: false, isGameOver: false,
         firstTimeCafeteria: true, firstTimeSmoking: true, firstTimeChapel: true,
-         talkCount: { "井口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 }
+         talkCount: { "井口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 },
+         // ★ 謎解きの救済措置用のカウント ★
+         puzzleMistakes: 0
     };
     let typingInterval; let isTyping = false;
 
@@ -451,9 +453,17 @@
             gameState.puzzleCleared = true; 
         } else { 
             playBeep('cancel');
-            printText("蟹江「……全然違うじゃん。ひらがな4文字だよ。めんどくさいな……」", () => {
-                showMainMenu();
-            }); 
+            // ★ 救済措置：5回以上間違えるとヒントを出す ★
+            gameState.puzzleMistakes++;
+            if (gameState.puzzleMistakes >= 5) {
+                printText("蟹江「……はぁ。お前マジでめんどくさいな。特別にヒントやるよ。\n校門が『か』、食堂が『わ』、喫煙所が『か』だ。\nチャペルと合わせて『か・わ・か・〇』だろ。もう自分で考えろよ」", () => {
+                    showMainMenu();
+                });
+            } else {
+                printText("蟹江「……全然違うじゃん。ひらがな4文字だよ。めんどくさいな……」", () => {
+                    showMainMenu();
+                });
+            }
         }
     }
 
@@ -479,7 +489,7 @@
             
             if (gameState.talkCount[target] >= 3 && savedMsg) {
                 playSuccessSound();
-                printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突プレとしてメタ的なメッセージを放った！`);
+                printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
             } else {
                 printText(`＞ ${target} の証言を聞いた.\n\n${testimonies[target]}`); 
             }
@@ -489,16 +499,29 @@
             if (gameState.currentLocation === '校門') {
                 if (target === '看板') { r = "＞ 校門の看板だ.\n『名古屋学院大学 瀬戸キャンパス』とある."; }
                 else if (target === '掲示板') { 
-                    playClueSound(); r = "＞ 掲示板を調べた.\n今年大ヒットしている映画『もののけ姫』のポスターが貼ってある.\nよく見ると、アシタカの顔に 落書きで文字が書かれていた！\n\n第1のワード【 か 】を発見した！"; gameState.clues.koumon = true; 
+                    // ★ 蟹江の話を聞く前に文字が見つからないように修正 ★
+                    if (gameState.kanieFound) {
+                        playClueSound(); r = "＞ 掲示板を調べた.\n今年大ヒットしている映画『もののけ姫』のポスターが貼ってある.\nよく見ると、アシタカの顔に 落書きで文字が書かれていた！\n\n第1のワード【 か 】を発見した！"; gameState.clues.koumon = true; 
+                    } else {
+                        r = "＞ 掲示板を調べた.\n今年大ヒットしている映画『もののけ姫』のポスターが貼ってある.";
+                    }
                 }
             } else if (gameState.currentLocation === '食堂') {
                 if (target === 'テーブル') { r = "＞ テーブルを調べた.\nスパイシーな赤い液体で『英太郎が殺された』とある.\n強烈な匂いがする……. なんの汁だこれ？"; }
                 else if (target === '落とし物') {
-                    playClueSound(); r = "＞ 床に落ちていた 細長いCDケースを拾った.\n今年発売されたばかりの KinKi Kids『硝子の少年』の8センチCDだ！\nCDの裏にマジックで文字が書かれている…\n\n第2のワード【 わ 】を発見した！"; gameState.clues.shokudo = true; 
+                    if (gameState.kanieFound) {
+                        playClueSound(); r = "＞ 床に落ちていた 細長いCDケースを拾った.\n今年発売されたばかりの KinKi Kids『硝子の少年』の8センチCDだ！\nCDの裏にマジックで文字が書かれている…\n\n第2のワード【 わ 】を発見した！"; gameState.clues.shokudo = true; 
+                    } else {
+                        r = "＞ 床に落ちていた 細長いCDケースを拾った.\n今年発売されたばかりの KinKi Kids『硝子の少年』の8センチCDだ！\n懐かしい曲だなぁ。";
+                    }
                 }
             } else if (gameState.currentLocation === '喫煙所') {
                 if (target === '灰皿') { 
-                    playClueSound(); r = "＞ 灰皿の横に、誰かの『ポケベル』が落ちている.\n画面には「0840（おはよう）」の数字が残っている.\nその裏に シールで文字が貼られていた！\n\n第3のワード【 か 】を発見した！"; gameState.clues.kitsuenjo = true; 
+                    if (gameState.kanieFound) {
+                        playClueSound(); r = "＞ 灰皿の横に、誰かの『ポケベル』が落ちている.\n画面には「0840（おはよう）」の数字が残っている.\nその裏に シールで文字が貼られていた！\n\n第3のワード【 か 】を発見した！"; gameState.clues.kitsuenjo = true; 
+                    } else {
+                        r = "＞ 灰皿の横に、誰かの『ポケベル』が落ちている.\n画面には「0840（おはよう）」の数字が残っている.";
+                    }
                 }
                 else if (target === '自販機') { r = "＞ 自販機を調べた.\n「今年から消費税5%導入に伴い値上げしました」という悲しい貼り紙がある."; }
             } else if (gameState.currentLocation === 'チャペル') {
@@ -512,8 +535,11 @@
                 }
                 else if (target === '祭壇') { r = "＞ 祭壇を調べた.\n蟹江が面倒くさそうに寝っ転がっている."; }
                 else if (target === '長椅子') { 
-                    if(gameState.kanieFound) { playClueSound(); r = "＞ 長椅子の隙間を調べた.\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\nたまごっちの背面に 鋭利なもので文字が彫られている…\n\n第4のワード【 み 】を発見した！"; gameState.clues.chapel = true; }
-                    else { r = "＞ 長椅子の隙間を調べた.\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\n誰の忘れ物だろうか。"; }
+                    if(gameState.kanieFound) { 
+                        playClueSound(); r = "＞ 長椅子の隙間を調べた.\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\nたまごっちの背面に 鋭利なもので文字が彫られている…\n\n第4のワード【 み 】を発見した！"; gameState.clues.chapel = true; 
+                    } else { 
+                        r = "＞ 長椅子の隙間を調べた.\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\n誰の忘れ物だろうか。"; 
+                    }
                 }
             }
             printText(r);
@@ -620,52 +646,42 @@
     function startEndingRoll() {
         subCmdArea.style.display = 'none'; 
         
-        // ★ 音楽の再生と同時に、長さを自動測定して各種タイミングを同期するシステム ★
         endingMusic.play().then(() => {
-            // 音楽の長さ（秒数）を取得（取得できない場合はデフォルト96秒）
             let duration = endingMusic.duration;
             if (!duration || isNaN(duration)) duration = 96;
             
             document.getElementById('end-roll-overlay').style.display = 'block';
             
-            // 1. スクロール速度を音楽の長さに合わせる
             document.getElementById('end-roll-credits').style.animationDuration = duration + 's';
 
-            // 2. 画像3枚の切り替えタイミングを音楽の長さに合わせて均等割り当て
             const step = duration * 1000 / 3; 
             const cutInImage = document.getElementById('ed-cutin-image');
             
-            // 1枚目
             cutInImage.src = images['ed_beach_pregnant.png']; 
             setTimeout(() => cutInImage.classList.add('show-image'), 100); 
             setTimeout(() => { cutInImage.classList.remove('show-image'); }, step - 1500);
 
-            // 2枚目
             setTimeout(() => {
                 cutInImage.src = images['ED_RevealChains'];
                 cutInImage.classList.add('show-image'); 
             }, step);
             setTimeout(() => { cutInImage.classList.remove('show-image'); }, step * 2 - 1500);
 
-            // 3枚目
             setTimeout(() => {
                 cutInImage.src = images['ED_FutureFamily'];
                 cutInImage.classList.add('show-image'); 
             }, step * 2);
 
-            // 3. ★ 音楽が終了した「瞬間」に最後の画面へ切り替える（無音の待ち時間をゼロに） ★
             endingMusic.onended = function() {
                 document.getElementById('end-roll-overlay').style.display = 'none'; 
                 document.getElementById('feather-pen-overlay').style.display = 'flex'; 
                 
-                // 「Wishing...」からメッセージフォームが出るまでの間も短縮 (7秒→3.5秒)
                 setTimeout(() => { 
                     document.getElementById('meta-game-ui').style.display = 'flex';
                     document.getElementById('restart-btn-feather').style.display = 'block'; 
                 }, 3500); 
             };
 
-            // 保険：万が一 onended イベントが発火しなかった時のためのタイマー
             setTimeout(() => {
                 if(document.getElementById('end-roll-overlay').style.display !== 'none') {
                     if(endingMusic.onended) endingMusic.onended();
@@ -674,7 +690,6 @@
             
         }).catch(e => {
             console.log("Audio play error:", e);
-            // 音声が再生できないブラウザ環境用フォールバック
             document.getElementById('end-roll-overlay').style.display = 'block';
             setTimeout(() => {
                 document.getElementById('end-roll-overlay').style.display = 'none'; 
