@@ -362,7 +362,6 @@
         puzzleCleared: false, isGameOver: false,
         firstTimeCafeteria: true, firstTimeSmoking: true, firstTimeChapel: true,
          talkCount: { "井口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 },
-         // ★ 謎解きの救済措置用のカウント ★
          puzzleMistakes: 0
     };
     let typingInterval; let isTyping = false;
@@ -453,7 +452,6 @@
             gameState.puzzleCleared = true; 
         } else { 
             playBeep('cancel');
-            // ★ 救済措置：5回以上間違えるとヒントを出す ★
             gameState.puzzleMistakes++;
             if (gameState.puzzleMistakes >= 5) {
                 printText("蟹江「……はぁ。お前マジでめんどくさいな。特別にヒントやるよ。\n校門が『か』、食堂が『わ』、喫煙所が『か』だ。\nチャペルと合わせて『か・わ・か・〇』だろ。もう自分で考えろよ」", () => {
@@ -489,6 +487,7 @@
             
             if (gameState.talkCount[target] >= 3 && savedMsg) {
                 playSuccessSound();
+                // ★ バグ修正3: 誤字修正（突プレ -> 突如） ★
                 printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
             } else {
                 printText(`＞ ${target} の証言を聞いた.\n\n${testimonies[target]}`); 
@@ -499,7 +498,6 @@
             if (gameState.currentLocation === '校門') {
                 if (target === '看板') { r = "＞ 校門の看板だ.\n『名古屋学院大学 瀬戸キャンパス』とある."; }
                 else if (target === '掲示板') { 
-                    // ★ 蟹江の話を聞く前に文字が見つからないように修正 ★
                     if (gameState.kanieFound) {
                         playClueSound(); r = "＞ 掲示板を調べた.\n今年大ヒットしている映画『もののけ姫』のポスターが貼ってある.\nよく見ると、アシタカの顔に 落書きで文字が書かれていた！\n\n第1のワード【 か 】を発見した！"; gameState.clues.koumon = true; 
                     } else {
@@ -572,6 +570,8 @@
         else if (action === '犯人') { 
             if (!hasTalkedToAll) {
                 printText(`探偵（待てよ……まだ関係者全員の証言を聞いていない。\n本当に ${target} を犯人と決めてしまって大丈夫だろうか……？）`, () => {
+                    // ★ バグ修正1: サブメニュー表示時にメインメニューを確実に隠す ★
+                    mainCmdArea.style.display = 'none'; 
                     subCmdArea.style.display = 'grid';
                     subCmdArea.style.gridTemplateColumns = '1fr 1fr';
                     subCmdArea.innerHTML = `
@@ -595,7 +595,12 @@
                     subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = '<button class="cmd-btn" onclick="restoreFromBadEnd()">▶ 戻る</button>';
                 });
             } else { 
-                if (!gameState.puzzleCleared) { printText("探偵「井口！ お前が犯人だ！」\n井口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない."); }
+                if (!gameState.puzzleCleared) { 
+                    // ★ バグ修正2: 強行指名して失敗した際、メインメニューへ戻る処理を追加 ★
+                    printText("探偵「井口！ お前が犯人だ！」\n井口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない.", () => {
+                        showMainMenu();
+                    }); 
+                }
                 else { 
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
                     playShockSound();
