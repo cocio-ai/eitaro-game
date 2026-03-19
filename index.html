@@ -18,7 +18,6 @@
         /* --- エンディング・演出用CSS --- */
         #end-roll-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; color: #fff; z-index: 400; display: none; overflow: hidden; text-align: center; border: 6px double #fff; box-sizing: border-box; }
         
-        /* ★ 文字量が減った分、移動距離(-350%)を調整して心地よい速度を維持 ★ */
         #end-roll-credits { position: absolute; width: 100%; top: 100%; animation: scrollCredits 96s linear forwards; padding-bottom: 50vh; }
         @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -350%; } }
         
@@ -184,7 +183,7 @@
             <div class="meta-desc">
                 これで終わりではありません。ぜひゲームに加わってください！<br>
                 ゲーム内の登場人物たちに、英太郎への「祝福のメッセージ」を仕込むことができます。<br>
-                <span style="color:#0f0;">※メッセージはオンラインで全世界に共有されます！</span>
+                <span style="color:#0f0;">※仕込んだメッセージはみんなで共有できるようになっているよ</span>
             </div>
             <div style="margin-bottom: 5px; color:#ffeb3b; font-weight: bold;">【 重要 】自分の名前を選んでください ▼</div>
             <select id="bless-char">
@@ -382,7 +381,8 @@
                 message: msg,
                 timestamp: Date.now()
             }).then(() => {
-                alert(`${char} にオンラインでメッセージを仕込みました！\n（世界中のプレイヤーの画面に反映されます）\n\n【ヒント】\n再スタート後、ゲーム内でみんなの話を「よく聞いて」みましょう……。`);
+                // ★ アラート文面から「世界中の」を削除 ★
+                alert(`${char} にメッセージを仕込みました！\n（みんなの画面に反映されます）\n\n【ヒント】\n再スタート後、ゲーム内でみんなの話を「よく聞いて」みましょう……。`);
                 location.reload(); 
             }).catch((error) => {
                 console.error("Error writing document: ", error);
@@ -483,7 +483,6 @@
             let savedMsg = savedMsgObj ? savedMsgObj.message : null;
             
             if (gameState.talkCount[target] >= 3 && savedMsg) {
-                // ★ 隠しメッセージ用のポジティブな効果音に変更し、文字化けを修正 ★
                 playSuccessSound();
                 printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
             } else {
@@ -588,7 +587,6 @@
         else if (ep === 3) { sceneImage.src = images['厨房の英太郎']; locationTitle.innerText = "厨房の英太郎"; playShockSound(); }
         else if (ep === 6) { 
             sceneImage.src = images['ラーメン屋']; 
-            // ★ 楓晴発覚シーンにキラララーン音を追加 ★
             playSuccessSound(); 
         }
         
@@ -606,7 +604,6 @@
         }
     };
     
-    // ★ 映画のようなクロスフェード演出と、全体の時間を96秒に延長 ★
     function startEndingRoll() {
         subCmdArea.style.display = 'none'; endingMusic.play().catch(e => console.log(e));
         
