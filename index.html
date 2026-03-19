@@ -262,7 +262,6 @@
         } catch (e) {}
     }
     
-    // 【ネガティブ】驚き・ショック・恐怖
     function playShockSound() {
         if (!audioCtx) return;
         try {
@@ -276,7 +275,6 @@
         } catch(e) {}
     }
 
-    // 【ポジティブ】手がかり発見
     function playClueSound() {
         if (!audioCtx) return;
         try {
@@ -291,23 +289,21 @@
         } catch(e) {}
     }
     
-    // 【ポジティブ】隠しメッセージ発見時のファンファーレ
     function playSuccessSound() {
         if (!audioCtx) return;
         try {
             const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); 
             osc.connect(gain); gain.connect(audioCtx.destination);
             osc.type = 'sine'; 
-            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // ド
-            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // ミ
-            osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // ソ
-            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); // 高いド
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); 
+            osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); 
+            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); 
             gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6); 
             osc.start(); osc.stop(audioCtx.currentTime + 0.6);
         } catch(e) {}
     }
 
-    // 【ネガティブ】ゲームオーバー
     function playGameOverSound() {
         if (!audioCtx) return;
         try {
@@ -349,56 +345,40 @@
         'ED_FutureFamily': 'ed_family.png'
     };
     
-    // ★ 蟹江をlocationPeople['チャペル']に追加しない（祭壇裏の存在とするため） ★
+    // ★ 蟹江はチャペル発見時にlocationPeopleに追加されるため最初は空 ★
     const locationPeople = { '校門': [], '食堂': ['井口', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
-    // ★ 蟹江をallFriendsから削除（犯人指名リストに最初から出さない） ★
     let allFriends = ["井口", "加藤", "近藤", "櫛田", "高井", "秋葉"];
     const investigateSpots = { '校門': ['看板', '掲示板'], '食堂': ['テーブル', '落とし物'], '喫煙所': ['灰皿', '自販機'], 'チャペル': ['祭壇', '長椅子'] };
 
     const testimonies = {
         "井口": "井口「い、英太郎が死んだ！？ そ、そんな……！\nお、俺は何も知らないぞ！ 昨日の夜、ちょっと飲みすぎただけで……あわわわ！」\n\n＞ 井口は滝のような汗をかき、目が泳ぎまくっている。",
-        // ★ 加藤のセリフのヒント（ニンニク）を修正 ★
         "加藤": "加藤「現場の状況はまるで映画『セブン』だな。\nだが英太郎はしぶとい男だ. 絶対『イピカイエー』って言いながら帰ってくるさ！\nあーあ、早く帰ってTSUTAYAで借りてきたビデオ見たいのによ……。探偵さん、サクッと事件解決してくれよ」", 
         "近藤": "近藤「嘘だろ？ 英太郎が？\nバスケ部だった俺より タフな奴だったのにな……。\n爽やかな笑顔だけが取り柄の俺だけど、今日ばっかりは笑えねぇよ。\nあいつ、俺がノート貸してやったお礼に『とびきりスパイシーなメシ』を奢ってくれる約束だったんだぞ！」",
         "櫛田": "櫛田「チッ、あのバカ。勝手に死ぬとかマジで許さねえぞ。\n高校野球で鍛えた 俺の千本ノック並みの『愛あるイジり』を、笑顔で受け止めてくれるのは あいつくらいだったのによ…….\nおい探偵、俺の最高のオモチャを奪った犯人を早く見つけろ。バットでカチ割ってやる」",
-        // ★ 高井のセリフのヒント（ニンニク）を削除 ★
         "高井": "高井「えっ、マジで？\n俺いま たまごっちのウンチの世話と、PHSの着メロ作りで超忙しいんだけど…….\n探偵さん、事件解決したらPHSに連絡してよ」",
-        // ★ 秋葉のセリフのヒント（辛いメシ、お礼）を削除 ★
         "秋葉": "秋葉「オ、オデ信じらんねぇ！\n英太郎が死んだなんて、嘘だべ！\nオデ、名古屋に出てきて、まだ友達あいつしかいねぇのに！うわあああん！」",
-        // ★ 蟹江のセリフを修正（めんどくさがり、人見知り、話しかけないで） ★
-        "蟹江": "＞ 蟹江はめんどくさそうに、探偵から目を逸らした.\n蟹江「……あー、話しかけないで。人見知りだから疲れる。あっち行って。」"
+        // ★ 蟹江のセリフを「めんどくさがり・人見知り・あまり学校に来ない」に修正 ★
+        "蟹江": "蟹江「……あー、あんまり話しかけないで。俺、あんまり学校来ないし、人見知りだから疲れる。\n事件？ ああ、あそこに落ちてた【テキーラの空瓶】のこと？ めんどくさいからそのまま置いてあるよ。\n……あー、暗号？ なんか校門・食堂・喫煙所・チャペルに『4文字のひらがな』が隠されてるらしいよ。全部見つけたら教えて。だるいから俺は寝るわ」"
     };
 
     let gameState = { 
-        currentLocation: '校門', kanieFound: false, kanieNotebookFound: false, // ★ kanieNotebookFound追加 ★
+        currentLocation: '校門', kanieFound: false, 
         clues: { koumon: false, shokudo: false, kitsuenjo: false, chapel: false }, 
         puzzleCleared: false, isGameOver: false,
         firstTimeCafeteria: true, firstTimeSmoking: true, firstTimeChapel: true,
-         // ★ '蟹江'のtalkCountを削除 ★
-         talkCount: { "井口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0 }
+         talkCount: { "井口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 }
     };
     let typingInterval; let isTyping = false;
 
     window.saveBlessingAndRestart = function() {
-        // ★ チャペルのメモ帳のフォームからも保存できるように修正 ★
-        const charInput = document.getElementById('bless-char-kanie');
-        const msgInput = document.getElementById('bless-msg-kanie');
-        let char, msg;
-
-        if (charInput && msgInput) {
-            char = charInput.value;
-            msg = msgInput.value;
-        } else {
-            char = document.getElementById('bless-char').value;
-            msg = document.getElementById('bless-msg').value;
-        }
+        const char = document.getElementById('bless-char').value;
+        const msg = document.getElementById('bless-msg').value;
         
         if(msg.trim() !== "") {
             database.ref('blessings/' + char).set({
                 message: msg,
                 timestamp: Date.now()
             }).then(() => {
-                // ★ アラート文面から「世界中の」を削除 ★
                 alert(`${char} にメッセージを仕込みました！\n（みんなの画面に反映されます）\n\n【ヒント】\n再スタート後、ゲーム内でみんなの話を「よく聞いて」みましょう……。`);
                 location.reload(); 
             }).catch((error) => {
@@ -441,8 +421,7 @@
     }
     function showMainMenu() { 
         if (gameState.isGameOver) return; subCmdArea.style.display = 'none'; mainCmdArea.style.display = 'grid'; 
-        // ★ パズル画面へ行くコマンドを「メモ帳を見る」に変更し、蟹江発見＆メモ帳発見後にチャペルでのみ表示 ★
-        if (gameState.currentLocation === 'チャペル' && gameState.kanieFound && gameState.kanieNotebookFound && !gameState.puzzleCleared) cmdPuzzle.style.display = 'flex'; 
+        if (gameState.kanieFound && !gameState.puzzleCleared && gameState.currentLocation === 'チャペル') cmdPuzzle.style.display = 'flex'; 
         else cmdPuzzle.style.display = 'none'; 
     }
     function buildSubMenu(buttonsData, is1Column = false) { 
@@ -456,7 +435,6 @@
         backBtn.onclick = () => { playBeep('cancel'); showMainMenu(); }; subCmdArea.appendChild(backBtn); subCmdArea.scrollTop = 0; 
     }
     function showLocations() { buildSubMenu(["校門", "食堂", "喫煙所", "チャペル"].filter(loc => loc !== gameState.currentLocation).map(loc => ({ label: loc, action: () => executeCommand('場所移動', loc) }))); }
-    // ★ チャペルでは誰もいない（蟹江は話しかけリストに出さない）ように修正 ★
     function showTalkSubMenu() { const p = locationPeople[gameState.currentLocation]; if (p.length === 0) { printText("ここには誰もいないようだ."); return; } buildSubMenu(p.map(person => ({ label: person, action: () => executeCommand('聞く', person) })), true); }
     function showCulprits() { buildSubMenu(allFriends.map(person => ({ label: person, isDanger: true, action: () => executeCommand('犯人', person) })), true); }
     function showInvestigateSpots() { buildSubMenu(investigateSpots[gameState.currentLocation].map(spot => ({ label: spot, action: () => executeCommand('調べる', spot) }))); }
@@ -465,22 +443,21 @@
         playBeep('cancel'); gameState.isGameOver = false; sceneImage.src = images[gameState.currentLocation];
         locationTitle.innerText = `名学大 ${gameState.currentLocation}`; locationTitle.classList.remove("game-over-title");
         document.querySelectorAll('.fami-window').forEach(el => el.classList.remove("game-over-border"));
-        textArea.innerHTML = "気を取り直して、もう一度推理しよう…….\n誰が真犯人んだ…？"; showMainMenu(); 
+        textArea.innerHTML = "気を取り直して、もう一度推理しよう…….\n誰が真犯人なんだ…？"; showMainMenu(); 
     }
     
-    // ★ 蟹江のメモ帳のパズル入力処理を修正 ★
+    // ★ パズルの提出時の蟹江のセリフもキャラに合わせる ★
     window.submitPuzzle = function() {
         let ans = document.getElementById('puzzle-input').value;
         if (ans === "かわかみ") { 
             playClueSound(); 
-            // ★ メモ帳に証拠の場所が書かれていることにする ★
-            printText("＞ 正解！ メモ帳の端に『テキーラの瓶は、あっちの長椅子の隙間に落ちてた. めんどくさいからそのままにしてある.』と書かれていた！", () => {
+            printText("蟹江「……へー、正解。じゃあ約束通り、あそこに落ちてる【テキーラの空瓶】持ってっていいよ。\n……あー疲れた。もう話しかけないでね」\n\n＞ 決定的な証拠【テキーラの空瓶】を手に入れた！ これで全ての証拠が揃ったはずだ！", () => {
                 showMainMenu();
             }); 
             gameState.puzzleCleared = true; 
         } else { 
             playBeep('cancel');
-            printText("＞ 全然違う. ひらがな4文字を順番通りに入力するようだ…….", () => {
+            printText("蟹江「……全然違うじゃん。ひらがな4文字だよ。めんどくさいな……」", () => {
                 showMainMenu();
             }); 
         }
@@ -491,23 +468,18 @@
         if (action === '場所移動') { 
             gameState.currentLocation = target; sceneImage.src = images[target]; locationTitle.innerText = `名学大 瀬戸CP ${target}`; 
             let r = `＞ 【${target}】へ移動した.\nどうする？`;
-            // ★ 食堂、喫煙所への移動時の「友達」のヒントを削除 ★
             if (target === '食堂' && gameState.firstTimeCafeteria) { gameState.firstTimeCafeteria = false; playShockSound(); r = "＞ 【食堂】へ移動した.\n\n探偵「な、なんだこれは！？ テーブルに赤い液体で『英太郎が殺された・・・』と書かれている！」"; }
             else if (target === '喫煙所' && gameState.firstTimeSmoking) { gameState.firstTimeSmoking = false; r = "＞ 【喫煙所】へ移動した.\n\n探偵「誰かのポケベルが落ちているな…….\n辺りを調べてみるか」"; }
             else if (target === 'チャペル' && gameState.firstTimeChapel) { gameState.firstTimeChapel = false; r = "＞ 【チャペル】へ移動した.\n\n探偵「誰もいないが、誰かの気配がする……. 辺りを調べてみよう」"; }
             printText(r); showMainMenu(); 
         } 
         else if (action === '聞く') {
-            // ★ 蟹江の祝福メッセージ表示処理（talkCountカウンタ）から蟹江を除外 ★
-            if (target !== '蟹江') {
-                gameState.talkCount[target]++;
-            }
+            gameState.talkCount[target]++;
             
             let savedMsgObj = globalBlessings[target];
             let savedMsg = savedMsgObj ? savedMsgObj.message : null;
             
-            // ★ 蟹江は3回話しかけてもFirebaseメッセージを表示しない ★
-            if (target !== '蟹江' && gameState.talkCount[target] >= 3 && savedMsg) {
+            if (gameState.talkCount[target] >= 3 && savedMsg) {
                 playSuccessSound();
                 printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
             } else {
@@ -522,10 +494,7 @@
                     playClueSound(); r = "＞ 掲示板を調べた.\n今年大ヒットしている映画『もののけ姫』のポスターが貼ってある.\nよく見ると、アシタカの顔に 落書きで文字が書かれていた！\n\n第1のワード【 か 】を発見した！"; gameState.clues.koumon = true; 
                 }
             } else if (gameState.currentLocation === '食堂') {
-                if (target === 'テーブル') { 
-                    // ★ テーブル匂いのヒントを削除し、なんの汁か疑問に思うだけに ★
-                    r = "＞ テーブルを調べた.\nスパイシーな赤い液体で『英太郎が殺された』とある.\n強烈な匂いがする……. なんの汁だこれ？"; 
-                }
+                if (target === 'テーブル') { r = "＞ テーブルを調べた.\nスパイシーな赤い液体で『英太郎が殺された』とある.\n強烈な匂いがする……. なんの汁だこれ？"; }
                 else if (target === '落とし物') {
                     playClueSound(); r = "＞ 床に落ちていた 細長いCDケースを拾った.\n今年発売されたばかりの KinKi Kids『硝子の少年』の8センチCDだ！\nCDの裏にマジックで文字が書かれている…\n\n第2のワード【 わ 】を発見した！"; gameState.clues.shokudo = true; 
                 }
@@ -537,34 +506,38 @@
             } else if (gameState.currentLocation === 'チャペル') {
                 if (target === '祭壇' && !gameState.kanieFound) { 
                     playShockSound(); 
-                    // ★ 蟹江のセリフを修正（めんどくさい、誰も来ないと思ったのに） ★
-                    r = "＞ 祭壇の裏を調べた.\n探偵「うわっ！」\n\nなんと、暗闇でサボって寝ていた【蟹江】を発見した！\n蟹江「……あー、見つかった。めんどくさい。誰も来ないと思ってたのに。\n瓶？ ああ、あそこに落ちてた瓶なら、めんどくさいからそのまま置いてある。そこらへんにメモ帳も落ちてたかも。あー、話すのめんどくさい。」\n\n＞ これで【蟹江】への犯人指名が可能になった！"; 
+                    // ★ 蟹江の発見時のセリフを修正 ★
+                    r = "＞ 祭壇の裏を調べた.\n探偵「うわっ！」\n\nなんと、暗闇でサボって寝ていた【蟹江】を発見した！\n蟹江「……あー、見つかった。めんどくさい。誰も来ないと思ってたのに。」\n\n＞ 蟹江に話を聞けるようになった！"; 
                     gameState.kanieFound = true; 
-                    allFriends.push('蟹江'); // 蟹江を犯人指名リストに追加
-                    showMainMenu(); 
-                }
-                else if (target === '祭壇' && gameState.kanieFound && !gameState.kanieNotebookFound) { 
-                    playClueSound(); 
-                    r = "＞ 祭壇付近に、蟹江の【メモ帳】が落ちていた！\nメモ帳には、学校内の文字を繋げるパズルと、入力欄、そして英太郎への祝福メッセージの仕込み画面のようなものがある。"; 
-                    gameState.kanieNotebookFound = true; 
+                    locationPeople['チャペル'].push('蟹江'); // 話を聞けるように追加
+                    allFriends.push('蟹江'); 
                     showMainMenu(); 
                 }
                 else if (target === '祭壇') { r = "＞ 祭壇を調べた.\n蟹江が面倒くさそうに寝っ転がっている."; }
                 else if (target === '長椅子') { 
-                    if (gameState.kanieNotebookFound && gameState.puzzleCleared && !gameState.clues.chapel) {
-                        playClueSound(); r = "＞ 長椅子の隙間を調べた.\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\nたまごっちの背面に 鋭利なもので文字が彫られている…\n\n第4のワード【 み 】を発見した！\n\n＞ たまごっちの横に、決定的な証拠【テキーラの空瓶】が落ちていた！\n蟹江のメモ通りだ！ これで全ての証拠が揃ったはずだ！"; gameState.clues.chapel = true; 
-                    } else {
-                        playClueSound(); r = "＞ 長椅子の隙間を調べた.\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\nたまごっちの背面に 鋭利なもので文字が彫られている…\n\n第4のワード【 み 】を発見した！"; gameState.clues.chapel = true; 
-                    }
+                    if(gameState.kanieFound) { playClueSound(); r = "＞ 長椅子の隙間を調べた.\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\nたまごっちの背面に 鋭利なもので文字が彫られている…\n\n第4のワード【 み 】を発見した！"; gameState.clues.chapel = true; }
+                    else { r = "＞ 長椅子の隙間を調べた.\n探偵「こ、これは！ 超プレミアがついてる『白いたまごっち』！」\n誰の忘れ物だろうか。"; }
                 }
             }
             printText(r);
         } 
         else if (action === '謎を解く') { 
-            // ★ メモ帳を開くコマンドに名称変更 ★
-            printText("＞ 蟹江のメモ帳を開いた.\n學校内の文字を繋げた言葉を入力するようだ.\n祝福のメッセージもここに仕込めるみたいだ.", () => {
-                // ★ メモ帳（パズル＋祝福メッセージ）を開く関数に変更 ★
-                window.openKanieNotebook();
+            // ★ 謎を解く時の蟹江のセリフも修正 ★
+            if (!(gameState.clues.koumon && gameState.clues.shokudo && gameState.clues.kitsuenjo && gameState.clues.chapel)) { printText("蟹江「……まだ文字全部見つけてないじゃん。めんどくさいから全部調べてからにしてよ」"); return; }
+            
+            printText("蟹江「……全部見つけたの？ じゃあ、その4つのワード繋げた言葉、言ってみて」", () => {
+                mainCmdArea.style.display = 'none';
+                subCmdArea.style.display = 'flex';
+                subCmdArea.style.flexDirection = 'column';
+                subCmdArea.style.alignItems = 'center';
+                subCmdArea.style.justifyContent = 'center';
+                subCmdArea.innerHTML = `
+                    <input type="text" id="puzzle-input" placeholder="ひらがな4文字" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="font-family:'DotGothic16'; font-size:18px; padding:5px; margin-bottom:10px; text-align:center; background:#111; color:#0f0; border:2px solid #555; width: 80%; -webkit-appearance: none; appearance: none; border-radius: 0;">
+                    <div style="display:flex; gap:10px; width:80%;">
+                        <button class="cmd-btn special-btn" style="flex:1; justify-content:center;" onclick="submitPuzzle()">答える</button>
+                        <button class="cmd-btn btn-back" style="flex:1; justify-content:center;" onclick="showMainMenu()">戻る</button>
+                    </div>
+                `;
             });
         } 
         else if (action === '犯人') { 
@@ -583,72 +556,12 @@
                 else { 
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
                     playShockSound();
-                    printText("探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n\n＞ 井口は猛ダッシュで逃げ出し、置き手紙には『あいつに飲ませすぎた. すまない』とあった.\n探偵たちは、英太郎がまだチャペルのどこかにいると確信した.", () => {
-                        subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="executeCommand(\'チャペル内へ行く\', \'チャペル\')">▶ チャペル内へ行く</button>';
+                    printText("探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n\n＞ 井口は猛ダッシュで逃げ出した！\n置き手紙には『あいつに飲ませすぎた. すまない』とあった.\n\n探偵たちは大学内をくまなく適当に探したが、\n多分すぐに帰ってくるだろうと誰も大して心配しなかった.\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 一行は、逃げた井口のことなどすっかり忘れ、ラーメン屋に向かうことにした…….", () => {
+                        subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ ラーメン屋へ行く</button>';
                     });
                 } 
             } 
         } 
-        else if (action === 'チャペル内へ行く') {
-            executeCommand('場所移動', 'チャペル');
-            printText("＞ 楓晴たちは、チャペル内をくまなく探したが、\n多分すぐに帰ってくるだろうと誰も大して心配しなかった.\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 一行は、逃げた井口のことなどすっかり忘れ、ラーメン屋に向かうことにした…….", () => {
-                subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ ラーメン屋へ行く</button>';
-            });
-        }
-    }
-
-    // ★ メモ帳を開く（パズル＋祝福メッセージフォーム表示）関数を追加 ★
-    window.openKanieNotebook = function() {
-        mainCmdArea.style.display = 'none';
-        subCmdArea.style.display = 'flex';
-        subCmdArea.style.flexDirection = 'column';
-        subCmdArea.style.alignItems = 'center';
-        subCmdArea.style.justifyContent = 'center';
-        subCmdArea.style.padding = '10px';
-        subCmdArea.style.border = '2px dashed #fff';
-        subCmdArea.innerHTML = `
-            <div style="font-family:'DotGothic16'; color: #ffeb3b; font-size: 18px; margin-bottom: 10px;">【 蟹江のメモ帳 】</div>
-            
-            <div style="font-family:'DotGothic16'; color: #aaa; font-size: 14px; margin-bottom: 5px;">学校内の文字を順番通りに繋げろ ▼</div>
-            <input type="text" id="puzzle-input" placeholder="ひらがな4文字" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="font-family:'DotGothic16'; font-size:18px; padding:5px; margin-bottom:10px; text-align:center; background:#111; color:#0f0; border:2px solid #555; width: 80%; -webkit-appearance: none; appearance: none; border-radius: 0;">
-            <div style="display:flex; gap:10px; width:80%; margin-bottom: 20px;">
-                <button class="cmd-btn special-btn" style="flex:1; justify-content:center;" onclick="submitKaniePuzzle()">答える</button>
-            </div>
-
-            <div style="font-family:'Kaisei Decol'; color: #fff; font-size: 18px; margin-bottom: 10px; border-top: 1px dashed #fff; padding-top: 10px;">英太郎への祝福のメッセージ</div>
-            <div style="font-family:'DotGothic16'; color: #0f0; font-size: 12px; margin-bottom: 5px;">※仕込んだメッセージはみんなで共有できるようになっているよ</div>
-            <select id="bless-char-kanie" style="font-family: 'DotGothic16'; font-size: 12px; padding: 3px; margin-bottom: 5px; background: #222; color: #fff; border: 1px solid #fff; -webkit-appearance: none; appearance: none; border-radius: 0;">
-                <option value="井口">井口</option>
-                <option value="加藤">加藤</option>
-                <option value="近藤">近藤</option>
-                <option value="櫛田">櫛田</option>
-                <option value="高井">高井</option>
-                <option value="秋葉">秋葉</option>
-                <option value="蟹江">蟹江</option>
-            </select>
-            <textarea id="bless-msg-kanie" rows="2" placeholder="お祝いメッセージを入力してください..." style="font-family:'DotGothic16'; font-size:12px; padding: 5px; margin-bottom: 10px; width: 90%; background: #111; color: #fff; border: 1px solid #fff; resize: none; -webkit-appearance: none; appearance: none; border-radius: 0;"></textarea>
-            <button id="save-bless-btn-kanie" onclick="saveBlessingAndRestart()" style="background: #f00; border: 2px solid #fff; color: #fff; font-size: 14px; font-family: 'DotGothic16'; cursor: pointer; padding: 5px 15px; font-weight: bold;">▶ 仕込んでリスタート</button>
-            
-            <button class="cmd-btn btn-back" style="justify-content:center; margin-top: 15px; width: 50%;" onclick="showMainMenu()">閉じる</button>
-        `;
-    }
-
-    // ★ メモ帳のパズル正解時の処理関数を追加 ★
-    window.submitKaniePuzzle = function() {
-        let ans = document.getElementById('puzzle-input').value;
-        if (ans === "かわかみ") { 
-            playClueSound(); 
-            // ★ メモ帳に証拠の場所が書かれていることにする ★
-            printText("＞ 正解！ メモ帳の端に『テキーラの瓶は、あっちの長椅子の隙間に落ちてた. めんどくさいからそのままにしてある.』と書かれていた！", () => {
-                showMainMenu();
-            }); 
-            gameState.puzzleCleared = true; 
-        } else { 
-            playBeep('cancel');
-            printText("＞ 全然違う. ひらがな4文字を順番通りに入力するようだ…….", () => {
-                showMainMenu();
-            }); 
-        }
     }
 
     let ep = 0; const et = [
