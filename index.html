@@ -479,7 +479,7 @@
             
             if (gameState.talkCount[target] >= 3 && savedMsg) {
                 playSuccessSound();
-                printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突如としてメタ的なメッセージを放った！`);
+                printText(`＞ ${target} の様子がおかしい…….\n\n${target}「${savedMsg}」\n\n＞ ${target} は 突プレとしてメタ的なメッセージを放った！`);
             } else {
                 printText(`＞ ${target} の証言を聞いた.\n\n${testimonies[target]}`); 
             }
@@ -544,7 +544,6 @@
             });
         } 
         else if (action === '犯人') { 
-            // ★ 全員の証言を聞いていない場合の警告メッセージ（やめる/決める） ★
             if (!hasTalkedToAll) {
                 printText(`探偵（待てよ……まだ関係者全員の証言を聞いていない。\n本当に ${target} を犯人と決めてしまって大丈夫だろうか……？）`, () => {
                     subCmdArea.style.display = 'grid';
@@ -559,7 +558,6 @@
             }
         }
         else if (action === '犯人確定') {
-            // ★ 実際の犯人指名ロジック ★
             if (target !== '井口') { 
                 gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none'; 
                 let img = 'ニュース_ハチ'; let dr = "スズメバチに刺され ショック死";
@@ -620,43 +618,73 @@
     };
     
     function startEndingRoll() {
-        subCmdArea.style.display = 'none'; endingMusic.play().catch(e => console.log(e));
+        subCmdArea.style.display = 'none'; 
         
-        const cutInImage = document.getElementById('ed-cutin-image');
-        document.getElementById('end-roll-overlay').style.display = 'block';
-
-        // 1枚目（0s〜32s）
-        cutInImage.src = images['ed_beach_pregnant.png']; 
-        setTimeout(() => cutInImage.classList.add('show-image'), 100); 
-
-        // 30秒で1枚目のフェードアウト開始（1.5秒かけて消える）
-        setTimeout(() => { cutInImage.classList.remove('show-image'); }, 30000);
-
-        // 2枚目（32s〜64s）完全に消えてから入れ替え
-        setTimeout(() => {
-            cutInImage.src = images['ED_RevealChains'];
-            cutInImage.classList.add('show-image'); 
-        }, 32000);
-
-        // 62秒で2枚目のフェードアウト開始
-        setTimeout(() => { cutInImage.classList.remove('show-image'); }, 62000);
-
-        // 3枚目（64s〜96s）完全に消えてから入れ替え
-        setTimeout(() => {
-            cutInImage.src = images['ED_FutureFamily'];
-            cutInImage.classList.add('show-image'); 
-        }, 64000);
-
-        // 96秒後(1分36秒)に終了
-        setTimeout(() => { 
-            document.getElementById('end-roll-overlay').style.display = 'none'; 
-            document.getElementById('feather-pen-overlay').style.display = 'flex'; 
+        // ★ 音楽の再生と同時に、長さを自動測定して各種タイミングを同期するシステム ★
+        endingMusic.play().then(() => {
+            // 音楽の長さ（秒数）を取得（取得できない場合はデフォルト96秒）
+            let duration = endingMusic.duration;
+            if (!duration || isNaN(duration)) duration = 96;
             
-            setTimeout(() => { 
-                document.getElementById('meta-game-ui').style.display = 'flex';
-                document.getElementById('restart-btn-feather').style.display = 'block'; 
-            }, 7000); 
-        }, 96000); 
+            document.getElementById('end-roll-overlay').style.display = 'block';
+            
+            // 1. スクロール速度を音楽の長さに合わせる
+            document.getElementById('end-roll-credits').style.animationDuration = duration + 's';
+
+            // 2. 画像3枚の切り替えタイミングを音楽の長さに合わせて均等割り当て
+            const step = duration * 1000 / 3; 
+            const cutInImage = document.getElementById('ed-cutin-image');
+            
+            // 1枚目
+            cutInImage.src = images['ed_beach_pregnant.png']; 
+            setTimeout(() => cutInImage.classList.add('show-image'), 100); 
+            setTimeout(() => { cutInImage.classList.remove('show-image'); }, step - 1500);
+
+            // 2枚目
+            setTimeout(() => {
+                cutInImage.src = images['ED_RevealChains'];
+                cutInImage.classList.add('show-image'); 
+            }, step);
+            setTimeout(() => { cutInImage.classList.remove('show-image'); }, step * 2 - 1500);
+
+            // 3枚目
+            setTimeout(() => {
+                cutInImage.src = images['ED_FutureFamily'];
+                cutInImage.classList.add('show-image'); 
+            }, step * 2);
+
+            // 3. ★ 音楽が終了した「瞬間」に最後の画面へ切り替える（無音の待ち時間をゼロに） ★
+            endingMusic.onended = function() {
+                document.getElementById('end-roll-overlay').style.display = 'none'; 
+                document.getElementById('feather-pen-overlay').style.display = 'flex'; 
+                
+                // 「Wishing...」からメッセージフォームが出るまでの間も短縮 (7秒→3.5秒)
+                setTimeout(() => { 
+                    document.getElementById('meta-game-ui').style.display = 'flex';
+                    document.getElementById('restart-btn-feather').style.display = 'block'; 
+                }, 3500); 
+            };
+
+            // 保険：万が一 onended イベントが発火しなかった時のためのタイマー
+            setTimeout(() => {
+                if(document.getElementById('end-roll-overlay').style.display !== 'none') {
+                    if(endingMusic.onended) endingMusic.onended();
+                }
+            }, duration * 1000 + 1000);
+            
+        }).catch(e => {
+            console.log("Audio play error:", e);
+            // 音声が再生できないブラウザ環境用フォールバック
+            document.getElementById('end-roll-overlay').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('end-roll-overlay').style.display = 'none'; 
+                document.getElementById('feather-pen-overlay').style.display = 'flex';
+                setTimeout(() => { 
+                    document.getElementById('meta-game-ui').style.display = 'flex';
+                    document.getElementById('restart-btn-feather').style.display = 'block'; 
+                }, 3500); 
+            }, 96000);
+        });
     }
 </script>
 </body>
