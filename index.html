@@ -130,7 +130,7 @@
             
             <div style="margin-top: 40px;"></div>
             <div class="cr-role">出演</div>
-            <div class="cr-name">鈴木</div><div class="cr-name">山口</div><div class="cr-name">加藤</div><div class="cr-name">近藤</div>
+            <div class="cr-name">陽介</div><div class="cr-name">加藤</div><div class="cr-name">近藤</div>
             <div class="cr-name">櫛田</div><div class="cr-name">高井</div><div class="cr-name">秋葉</div><div class="cr-name">蟹江</div>
             
             <div style="margin-top: 60px;"></div>
@@ -149,11 +149,11 @@
             
             <div style="margin-top: 80px;"></div>
             
-            <div class="cr-role" style="font-size: 24px; color: #00ffff; text-shadow: 1px 1px 0 #0055ff;">【 山口のその後 】</div>
+            <div class="cr-role" style="font-size: 24px; color: #00ffff; text-shadow: 1px 1px 0 #0055ff;">【 陽介のその後 】</div>
             
             <div style="margin-top: 20px;"></div>
             <div class="cr-history-box" style="border-color: #00ffff; background: rgba(0, 255, 255, 0.05); text-align: center;">
-                <div class="cr-history">大学から逃げた山口は、なんとそのまま千葉へ。</div>
+                <div class="cr-history">大学から逃げた陽介は、なんとそのまま千葉へ。</div>
                 <div class="cr-history">そこでそのまま移住し、元気に暮らしているという。</div>
                 <div style="margin-top: 15px;"></div>
                 <div class="cr-history" style="color: #aaa;">「いつかまた、英太郎と一緒に働きたい……」</div>
@@ -187,8 +187,7 @@
             </div>
             <div style="margin-bottom: 5px; color:#ffeb3b; font-weight: bold;">【 重要 】自分の名前を選んでください ▼</div>
             <select id="bless-char">
-                <option value="鈴木">鈴木</option>
-                <option value="山口">山口</option>
+                <option value="陽介">陽介</option>
                 <option value="加藤">加藤</option>
                 <option value="近藤">近藤</option>
                 <option value="櫛田">櫛田</option>
@@ -343,16 +342,12 @@
         'ED_FutureFamily': 'ed_family.png'
     };
     
-    // ★ 校門に「鈴木」を配置 ★
-    const locationPeople = { '校門': ['鈴木'], '食堂': ['山口', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
-    // ★ 全員のリストに鈴木を追加 ★
-    let allFriends = ["鈴木", "山口", "加藤", "近藤", "櫛田", "高井", "秋葉"];
+    const locationPeople = { '校門': [], '食堂': ['陽介', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
+    let allFriends = ["陽介", "加藤", "近藤", "櫛田", "高井", "秋葉"];
     const investigateSpots = { '校門': ['看板', '掲示板'], '食堂': ['テーブル', '落とし物'], '喫煙所': ['灰皿', '自販機'], 'チャペル': ['祭壇', '長椅子'] };
 
     const testimonies = {
-        // ★ 鈴木の証言を追加（パシリや幹事を押し付けていた罪悪感） ★
-        "鈴木": "鈴木「えっ、英太郎が死んだって！？ 嘘だろ……。\n俺、いっつも あいつに合コンのセッティングとか、パチンコの場所取りとか押し付けてたんだけど……。\n……まさか、そのストレスで過労死したとかじゃないよな……？」",
-        "山口": "山口「い、英太郎が死んだ！？ そ、そんな……！\nお、俺は何も知らないぞ！ 昨日の夜、ちょっとテキーラ飲ませすぎただけで……あわわわ！」\n\n＞ 山口は滝のような汗をかき、目が泳ぎまくっている。",
+        "陽介": "陽介「い、英太郎が死んだ！？ そ、そんな……！\nお、俺は何も知らないぞ！ 昨日の夜、ちょっとテキーラ飲ませすぎただけで……あわわわ！」\n\n＞ 陽介は滝のような汗をかき、目が泳ぎまくっている。",
         "加藤": "加藤「現場の状況はまるで映画『セブン』だな。\nだが英太郎はしぶとい男だ。絶対『イピカイエー』って言いながら帰ってくるさ！\n……俺がいつも深夜に、エロビデオの返却のパシリに行かせてたせいじゃないよな……？」", 
         "近藤": "近藤「嘘だろ？ 英太郎が？\n爽やかな笑顔だけが取り柄の俺だけど、今日ばっかりは笑えねぇよ。\nあいつ、俺がノート貸してやったお礼に『とびきりスパイシーなメシ』を奢ってくれる約束だったんだぞ！\n……まぁ、俺が毎週レポート全部あいつに丸投げしてたのは、お互い様ってことで……」",
         "櫛田": "櫛田「チッ、あのバカ。勝手に死ぬとかマジで許さねえぞ。\n高校野球で鍛えた 俺の千本ノック並みの『愛あるイジり』を、笑顔で受け止めてくれるのは あいつくらいだったのによ……。\n……チッ、最近ちょっとパシリに使いすぎたのがマズかったか……？」",
@@ -366,8 +361,7 @@
         clues: { koumon: false, shokudo: false, kitsuenjo: false, chapel: false }, 
         puzzleCleared: false, isGameOver: false,
         firstTimeCafeteria: true, firstTimeSmoking: true, firstTimeChapel: true,
-         // ★ 話した回数カウントにも鈴木を追加 ★
-         talkCount: { "鈴木": 0, "山口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 },
+         talkCount: { "陽介": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 },
          puzzleMistakes: 0
     };
     let typingInterval; let isTyping = false;
@@ -410,7 +404,7 @@
     function startGame() { 
         playBeep('select');
         document.getElementById('title-overlay').style.display = 'none'; 
-        printText("時は1997年、愛知県瀬戸市。\n俺は 私立探偵。\nある人物の素行調査で、この『名学大 瀬戸キャンパス』の校門に やってきた。\n\nすれ違う男子学生はやけに髪が長いし、携帯電話は やたらと分厚く アンテナが伸びている。\nどこか 懐かしいような、不思議な感覚だ。\n\n俺は 探偵として、まずは学内を調べてみることにした。\nよし、まずは校門にいるヤツから話を聞くか、他の場所に行ってみよう。\n関係者全員の話をしっかり聞くことが、事件解決への近道だ。\n\n【チュートリアル：『話を聞く』か『場所移動』を選んでください】"); 
+        printText("時は1997年、愛知県瀬戸市。\n俺は 私立探偵。\nある人物の素行調査で、この『名学大 瀬戸キャンパス』の校門に やってきた。\n\nすれ違う男子学生はやけに髪が長いし、携帯電話は やたらと分厚く アンテナが伸びている。\nどこか 懐かしいような、不思議な感覚だ。\n\n俺は 探偵として、まずは学内を調べてみることにした。\nよし、まずは【食堂】に行ってみよう。\n関係者全員の話をしっかり聞くことが、事件解決への近道だ。\n\n【チュートリアル：『場所移動』から 食堂 を選んでください】"); 
     }
 
     function printText(text, callback = null) {
@@ -474,8 +468,7 @@
     function executeCommand(action, target) {
         if (isTyping || gameState.isGameOver) return;
         
-        // ★ 証言コンプリートの条件に鈴木を追加 ★
-        const mainFriends = ["鈴木", "山口", "加藤", "近藤", "櫛田", "高井", "秋葉"];
+        const mainFriends = ["陽介", "加藤", "近藤", "櫛田", "高井", "秋葉"];
         const hasTalkedToAll = mainFriends.every(f => gameState.talkCount[f] > 0);
 
         if (action === '場所移動') { 
@@ -600,11 +593,11 @@
             }
         }
         else if (action === '犯人確定') {
-            if (target !== '山口') { 
+            if (target !== '陽介') { 
                 gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none'; 
                 let img = 'ニュース_ハチ'; let dr = "スズメバチに刺され ショック死";
                 if (target === '近藤' || target === '櫛田') { img = 'ニュース_水'; dr = "ミネラルウォーターの飲み過ぎで 水中毒死"; }
-                else if (target === '高井' || target === '蟹江' || target === '鈴木') { img = 'ニュース_なめこ'; dr = "なめこの食べ過ぎで 中毒死"; }
+                else if (target === '高井' || target === '蟹江') { img = 'ニュース_なめこ'; dr = "なめこの食べ過ぎで 中毒死"; }
                 sceneImage.src = images[img]; locationTitle.innerText = "臨時ニュース"; locationTitle.classList.add("game-over-title");
                 document.querySelectorAll('.fami-window').forEach(el => el.classList.add("game-over-border")); playGameOverSound();
                 printText(`探偵「犯人はお前だ！ ${target}！」\n${target}「はぁ？ 証拠あんのかよ！」\n\n（ピピピピ…！）\nニュース『英太郎さんは、${dr}しました』\n探偵「事件じゃなかったのか…」\n\n【 BAD END 】`, () => {
@@ -612,14 +605,14 @@
                 });
             } else { 
                 if (!gameState.puzzleCleared) { 
-                    printText("探偵「山口！ お前が犯人だ！」\n山口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない.", () => {
+                    printText("探偵「陽介！ お前が犯人だ！」\n陽介「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない.", () => {
                         showMainMenu();
                     }); 
                 }
                 else { 
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
                     playShockSound();
-                    printText("探偵「山口、この【テキーラの空瓶】に見覚えはあるな？」\n山口「あっ……！！」\n山口「……ちょっとトイレに！」\n\n＞ 山口は猛ダッシュで逃げ出した！\n置き手紙には『あいつに飲ませすぎた. すまない』とあった.\n\n探偵たちは大学内をくまなく適当に探したが、\n多分すぐに帰ってくるだろうと誰も大して心配しなかった.\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 一行は、逃げた山口のことなどすっかり忘れ、ラーメン屋に向かうことにした…….", () => {
+                    printText("探偵「陽介、この【テキーラの空瓶】に見覚えはあるな？」\n陽介「あっ……！！」\n陽介「……ちょっとトイレに！」\n\n＞ 陽介は猛ダッシュで逃げ出した！\n置き手紙には『あいつに飲ませすぎた. すまない』とあった.\n\n探偵たちは大学内をくまなく適当に探したが、\n多分すぐに帰ってくるだろうと誰も大して心配しなかった.\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 一行は、逃げた陽介のことなどすっかり忘れ、ラーメン屋に向かうことにした…….", () => {
                         subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ ラーメン屋へ行く</button>';
                     });
                 } 
