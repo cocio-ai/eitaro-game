@@ -130,7 +130,7 @@
             
             <div style="margin-top: 40px;"></div>
             <div class="cr-role">出演</div>
-            <div class="cr-name">井口</div><div class="cr-name">加藤</div><div class="cr-name">近藤</div>
+            <div class="cr-name">山口</div><div class="cr-name">加藤</div><div class="cr-name">近藤</div>
             <div class="cr-name">櫛田</div><div class="cr-name">高井</div><div class="cr-name">秋葉</div><div class="cr-name">蟹江</div>
             
             <div style="margin-top: 60px;"></div>
@@ -149,11 +149,11 @@
             
             <div style="margin-top: 80px;"></div>
             
-            <div class="cr-role" style="font-size: 24px; color: #00ffff; text-shadow: 1px 1px 0 #0055ff;">【 井口のその後 】</div>
+            <div class="cr-role" style="font-size: 24px; color: #00ffff; text-shadow: 1px 1px 0 #0055ff;">【 山口のその後 】</div>
             
             <div style="margin-top: 20px;"></div>
             <div class="cr-history-box" style="border-color: #00ffff; background: rgba(0, 255, 255, 0.05); text-align: center;">
-                <div class="cr-history">大学から逃げた井口は、なんとそのまま千葉へ。</div>
+                <div class="cr-history">大学から逃げた山口は、なんとそのまま千葉へ。</div>
                 <div class="cr-history">そこでそのまま移住し、元気に暮らしているという。</div>
                 <div style="margin-top: 15px;"></div>
                 <div class="cr-history" style="color: #aaa;">「いつかまた、英太郎と一緒に働きたい……」</div>
@@ -187,7 +187,7 @@
             </div>
             <div style="margin-bottom: 5px; color:#ffeb3b; font-weight: bold;">【 重要 】自分の名前を選んでください ▼</div>
             <select id="bless-char">
-                <option value="井口">井口</option>
+                <option value="山口">山口</option>
                 <option value="加藤">加藤</option>
                 <option value="近藤">近藤</option>
                 <option value="櫛田">櫛田</option>
@@ -342,13 +342,12 @@
         'ED_FutureFamily': 'ed_family.png'
     };
     
-    const locationPeople = { '校門': [], '食堂': ['井口', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
-    let allFriends = ["井口", "加藤", "近藤", "櫛田", "高井", "秋葉"];
+    const locationPeople = { '校門': [], '食堂': ['山口', '加藤', '秋葉'], '喫煙所': ['近藤', '櫛田', '高井'], 'チャペル': [] };
+    let allFriends = ["山口", "加藤", "近藤", "櫛田", "高井", "秋葉"];
     const investigateSpots = { '校門': ['看板', '掲示板'], '食堂': ['テーブル', '落とし物'], '喫煙所': ['灰皿', '自販機'], 'チャペル': ['祭壇', '長椅子'] };
 
-    // ★ 証言テキストに「英太郎に色々やらせすぎた罪悪感」を追加 ★
     const testimonies = {
-        "井口": "井口「い、英太郎が死んだ！？ そ、そんな……！\nお、俺は何も知らないぞ！ 昨日の夜、ちょっとテキーラ飲ませすぎただけで……あわわわ！」\n\n＞ 井口は滝のような汗をかき、目が泳ぎまくっている。",
+        "山口": "山口「い、英太郎が死んだ！？ そ、そんな……！\nお、俺は何も知らないぞ！ 昨日の夜、ちょっとテキーラ飲ませすぎただけで……あわわわ！」\n\n＞ 山口は滝のような汗をかき、目が泳ぎまくっている。",
         "加藤": "加藤「現場の状況はまるで映画『セブン』だな。\nだが英太郎はしぶとい男だ。絶対『イピカイエー』って言いながら帰ってくるさ！\n……俺がいつも深夜に、エロビデオの返却のパシリに行かせてたせいじゃないよな……？」", 
         "近藤": "近藤「嘘だろ？ 英太郎が？\n爽やかな笑顔だけが取り柄の俺だけど、今日ばっかりは笑えねぇよ。\nあいつ、俺がノート貸してやったお礼に『とびきりスパイシーなメシ』を奢ってくれる約束だったんだぞ！\n……まぁ、俺が毎週レポート全部あいつに丸投げしてたのは、お互い様ってことで……」",
         "櫛田": "櫛田「チッ、あのバカ。勝手に死ぬとかマジで許さねえぞ。\n高校野球で鍛えた 俺の千本ノック並みの『愛あるイジり』を、笑顔で受け止めてくれるのは あいつくらいだったのによ……。\n……チッ、最近ちょっとパシリに使いすぎたのがマズかったか……？」",
@@ -362,7 +361,7 @@
         clues: { koumon: false, shokudo: false, kitsuenjo: false, chapel: false }, 
         puzzleCleared: false, isGameOver: false,
         firstTimeCafeteria: true, firstTimeSmoking: true, firstTimeChapel: true,
-         talkCount: { "井口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 },
+         talkCount: { "山口": 0, "加藤": 0, "近藤": 0, "櫛田": 0, "高井": 0, "秋葉": 0, "蟹江": 0 },
          puzzleMistakes: 0
     };
     let typingInterval; let isTyping = false;
@@ -454,7 +453,6 @@
         } else { 
             playBeep('cancel');
             gameState.puzzleMistakes++;
-            // ★ 救済措置を3回に変更 ★
             if (gameState.puzzleMistakes >= 3) {
                 printText("蟹江「……はぁ。お前マジでめんどくさいな。特別にヒントやるよ。\n校門が『か』、食堂が『わ』、喫煙所が『か』だ。\nチャペルと合わせて『か・わ・か・〇』だろ。もう自分で考えろよ」", () => {
                     showMainMenu();
@@ -470,14 +468,13 @@
     function executeCommand(action, target) {
         if (isTyping || gameState.isGameOver) return;
         
-        const mainFriends = ["井口", "加藤", "近藤", "櫛田", "高井", "秋葉"];
+        const mainFriends = ["山口", "加藤", "近藤", "櫛田", "高井", "秋葉"];
         const hasTalkedToAll = mainFriends.every(f => gameState.talkCount[f] > 0);
 
         if (action === '場所移動') { 
             gameState.currentLocation = target; sceneImage.src = images[target]; locationTitle.innerText = `名学大 瀬戸CP ${target}`; 
             let r = `＞ 【${target}】へ移動した.\nどうする？`;
             
-            // ★ 初回訪問時に「話を聞く」へ誘導するテキストを追加 ★
             if (target === '食堂' && gameState.firstTimeCafeteria) { 
                 gameState.firstTimeCafeteria = false; 
                 playShockSound(); 
@@ -596,7 +593,7 @@
             }
         }
         else if (action === '犯人確定') {
-            if (target !== '井口') { 
+            if (target !== '山口') { 
                 gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none'; 
                 let img = 'ニュース_ハチ'; let dr = "スズメバチに刺され ショック死";
                 if (target === '近藤' || target === '櫛田') { img = 'ニュース_水'; dr = "ミネラルウォーターの飲み過ぎで 水中毒死"; }
@@ -608,14 +605,14 @@
                 });
             } else { 
                 if (!gameState.puzzleCleared) { 
-                    printText("探偵「井口！ お前が犯人だ！」\n井口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない.", () => {
+                    printText("探偵「山口！ お前が犯人だ！」\n山口「証拠もないのに 適当なこと言うなよ！」\n\n＞ まだ決定的な証拠が足りない.", () => {
                         showMainMenu();
                     }); 
                 }
                 else { 
                     gameState.isGameOver = true; mainCmdArea.style.display = 'none'; subCmdArea.style.display = 'none';
                     playShockSound();
-                    printText("探偵「井口、この【テキーラの空瓶】に見覚えはあるな？」\n井口「あっ……！！」\n井口「……ちょっとトイレに！」\n\n＞ 井口は猛ダッシュで逃げ出した！\n置き手紙には『あいつに飲ませすぎた. すまない』とあった.\n\n探偵たちは大学内をくまなく適当に探したが、\n多分すぐに帰ってくるだろうと誰も大して心配しなかった.\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 一行は、逃げた井口のことなどすっかり忘れ、ラーメン屋に向かうことにした…….", () => {
+                    printText("探偵「山口、この【テキーラの空瓶】に見覚えはあるな？」\n山口「あっ……！！」\n山口「……ちょっとトイレに！」\n\n＞ 山口は猛ダッシュで逃げ出した！\n置き手紙には『あいつに飲ませすぎた. すまない』とあった.\n\n探偵たちは大学内をくまなく適当に探したが、\n多分すぐに帰ってくるだろうと誰も大して心配しなかった.\n\n近藤「メシ食おうぜ！ ラーメン行こう！」\n＞ 一行は、逃げた山口のことなどすっかり忘れ、ラーメン屋に向かうことにした…….", () => {
                         subCmdArea.style.display = 'grid'; subCmdArea.style.gridTemplateColumns = '1fr'; subCmdArea.innerHTML = '<button class="cmd-btn special-btn" onclick="playEndingCutscene()">▶ ラーメン屋へ行く</button>';
                     });
                 } 
@@ -676,7 +673,6 @@
             cutInImage.src = images['ed_beach_pregnant.png']; 
             setTimeout(() => cutInImage.classList.add('show-image'), 100); 
 
-            // ★ 画像の切り替えチラつき修正：完全に消えてからsrcを変更し、少し待ってフェードインさせる ★
             setTimeout(() => { cutInImage.classList.remove('show-image'); }, step - 1500);
 
             setTimeout(() => {
